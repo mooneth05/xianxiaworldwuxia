@@ -317,149 +317,1974 @@ html,body{background:#111;color:#f0f0f0;font-family:'Noto Sans JP',sans-serif;mi
 <!-- SEARCH PAGE -->
 <div class="page" id="page-search">
   <div class="search-header">
-    <button class="reader-ba
-<button class="reader-back" onclick="goPage('home')">‹</button>
-<div class="search-input-wrap">
-  <input class="search-input" id="search-input" placeholder="小説を検索..." oninput="searchNovel()">
-</div>
+    <button class="reader-back" onclick="goPage('home')">‹</button>
+    <div class="search-input-wrap">
+      <span style="color:#666">🔍</span>
+      <input class="search-input" id="search-input" placeholder="小説、著者、ジャンルを検索..." oninput="doSearch(this.value)">
+    </div>
+  </div>
+  <div style="padding:70px 16px 16px">
+    <div id="search-ai-tip" style="display:none;margin-bottom:12px;padding:12px 14px;background:#1a1a1a;border-radius:10px;display:none;gap:10px;align-items:flex-start">
+      <span>✨</span>
+      <p id="search-ai-text" style="font-size:13px;color:#ccc;line-height:1.6"></p>
+    </div>
+    <div id="search-results"></div>
+    <div id="search-chips">
+      <div style="font-size:12px;color:#666;margin-bottom:10px;margin-top:8px">よく検索されるワード</div>
+      <span class="chip-btn" onclick="setSearch('仙侠')">仙侠</span>
+      <span class="chip-btn" onclick="setSearch('武侠')">武侠</span>
+      <span class="chip-btn" onclick="setSearch('転生')">転生</span>
+      <span class="chip-btn" onclick="setSearch('システム')">システム</span>
+      <span class="chip-btn" onclick="setSearch('完結')">完結</span>
+      <span class="chip-btn" onclick="setSearch('アクション')">アクション</span>
+    </div>
+  </div>
 </div>
 
-<div style="padding:16px" id="search-results"></div>
+<!-- LIBRARY PAGE -->
+<div class="page" id="page-library">
+  <div class="page-title-bar">
+    <button class="page-title-back" onclick="goPage('home')">‹</button>
+    <span class="page-title-text" id="lib-page-title">マイライブラリ</span>
+  </div>
+  <div style="padding:16px" id="library-list"></div>
 </div>
+
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="nav-btn active" onclick="goPage('home')">
-    <div class="nav-icon">🏠</div>
-    <div class="nav-label">ホーム</div>
+  <button class="nav-btn active" id="nav-home" onclick="goPage('home')">
+    <span class="nav-icon">🏠</span><span class="nav-label">ホーム</span>
   </button>
-  <button class="nav-btn" onclick="goPage('search')">
-    <div class="nav-icon">🔍</div>
-    <div class="nav-label">検索</div>
+  <button class="nav-btn" id="nav-search" onclick="goPage('search')">
+    <span class="nav-icon">🔍</span><span class="nav-label">検索</span>
   </button>
-  <button class="nav-btn" onclick="goPage('library')">
-    <div class="nav-icon">📚</div>
-    <div class="nav-label">ライブラリ</div>
+  <button class="nav-btn" id="nav-library" onclick="goPage('library')">
+    <span class="nav-icon">📚</span><span class="nav-label">ライブラリ</span>
+  </button>
+  <button class="nav-btn" id="nav-profile" onclick="goPage('profile')">
+    <span class="nav-icon">👤</span><span class="nav-label">プロフィール</span>
   </button>
 </nav>
-  <script>
-let currentPage = 'home';
 
-function goPage(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  currentPage = page;
-}
+<script>
+function makeCover(id) {
+  // Each cover: unique illustrated character + environment + fx
+  const covers = {
+    1: () => {
+      // Nine Star Hegemon - dark warrior with fire/lightning, dramatic
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+<defs>
+  <linearGradient id="c1bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0a0200"/><stop offset="50%" stop-color="#2d0800"/><stop offset="100%" stop-color="#1a0500"/></linearGradient>
+  <radialGradient id="c1glow" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#ff4400" stop-opacity="0.6"/><stop offset="100%" stop-color="#ff4400" stop-opacity="0"/></radialGradient>
+  <filter id="c1blur"><feGaussianBlur stdDeviation="2.5"/></filter>
+  <filter id="c1gf"><feGaussianBlur stdDeviation="1.5"/></filter>
+</defs>
+<rect width="200" height="280" fill="url(#c1bg)"/>
+<!-- Sky / atmosphere -->
+<rect width="200" height="160" fill="url(#c1glow)"/>
+<!-- Stars -->
+<circle cx="20" cy="15" r="1" fill="#fff" opacity=".8"/><circle cx="45" cy="8" r=".8" fill="#fff" opacity=".6"/><circle cx="80" cy="20" r="1.2" fill="#fff" opacity=".9"/><circle cx="120" cy="10" r=".8" fill="#fff" opacity=".7"/><circle cx="160" cy="18" r="1" fill="#fff" opacity=".8"/><circle cx="185" cy="6" r=".7" fill="#fff" opacity=".5"/><circle cx="35" cy="30" r=".6" fill="#fff" opacity=".4"/>
+<!-- Nine stars glow -->
+<circle cx="100" cy="50" r="18" fill="none" stroke="#ffa040" stroke-width="1" opacity="0.3"/>
+<circle cx="100" cy="25" r="4" fill="#ffd700" opacity=".9" filter="url(#c1gf)"/>
+<circle cx="122" cy="33" r="3.5" fill="#ffa040" opacity=".85" filter="url(#c1gf)"/>
+<circle cx="130" cy="56" r="3" fill="#ff8020" opacity=".8" filter="url(#c1gf)"/>
+<circle cx="118" cy="76" r="3.5" fill="#ff6000" opacity=".85" filter="url(#c1gf)"/>
+<circle cx="100" cy="82" r="4" fill="#ff4400" opacity=".9" filter="url(#c1gf)"/>
+<circle cx="82" cy="76" r="3.5" fill="#ff6000" opacity=".85" filter="url(#c1gf)"/>
+<circle cx="70" cy="56" r="3" fill="#ff8020" opacity=".8" filter="url(#c1gf)"/>
+<circle cx="78" cy="33" r="3.5" fill="#ffa040" opacity=".85" filter="url(#c1gf)"/>
+<circle cx="100" cy="25" r="1.5" fill="#fff" opacity="1"/>
+<!-- Ground fire glow -->
+<ellipse cx="100" cy="220" rx="70" ry="20" fill="#ff4400" opacity="0.3" filter="url(#c1blur)"/>
+<!-- Character silhouette - warrior standing -->
+<g transform="translate(100,210)">
+  <!-- legs -->
+  <rect x="-12" y="-60" width="10" height="55" rx="3" fill="#1a0a00"/>
+  <rect x="2" y="-60" width="10" height="55" rx="3" fill="#1a0a00"/>
+  <!-- body/robe -->
+  <path d="M-22,-130 Q-25,-100 -28,-60 L28,-60 Q25,-100 22,-130 Z" fill="#111"/>
+  <path d="M-22,-130 Q-10,-120 0,-125 Q10,-120 22,-130 L18,-60 L-18,-60 Z" fill="#222"/>
+  <!-- belt -->
+  <rect x="-22" y="-72" width="44" height="8" rx="2" fill="#ff6600" opacity=".8"/>
+  <!-- chest detail -->
+  <path d="M-8,-120 L0,-100 L8,-120" fill="none" stroke="#ff8800" stroke-width="1.5" opacity=".7"/>
+  <!-- arms -->
+  <path d="M-22,-130 Q-45,-120 -50,-90 Q-45,-85 -38,-88 Q-35,-110 -18,-118 Z" fill="#1a0a00"/>
+  <path d="M22,-130 Q45,-120 50,-90 Q45,-85 38,-88 Q35,-110 18,-118 Z" fill="#1a0a00"/>
+  <!-- hand with energy -->
+  <circle cx="-48" cy="-86" r="6" fill="#ff4400" opacity=".9" filter="url(#c1gf)"/>
+  <circle cx="48" cy="-86" r="6" fill="#ff8800" opacity=".9" filter="url(#c1gf)"/>
+  <!-- neck -->
+  <rect x="-7" y="-145" width="14" height="18" rx="4" fill="#c8956c"/>
+  <!-- head -->
+  <ellipse cx="0" cy="-160" rx="18" ry="20" fill="#c8956c"/>
+  <!-- hair - flowing up dramatically -->
+  <path d="M-18,-155 Q-30,-145 -25,-125 Q-20,-115 -15,-118 Q-18,-130 -16,-148 Z" fill="#111"/>
+  <path d="M18,-155 Q30,-145 25,-125 Q20,-115 15,-118 Q18,-130 16,-148 Z" fill="#111"/>
+  <path d="M-10,-178 Q0,-190 10,-178 Q8,-168 0,-170 Q-8,-168 -10,-178 Z" fill="#111"/>
+  <path d="M-5,-182 Q0,-195 5,-182" fill="none" stroke="#111" stroke-width="4"/>
+  <!-- eyes glow -->
+  <ellipse cx="-7" cy="-162" rx="4" ry="3" fill="#ff4400" opacity=".9"/>
+  <ellipse cx="7" cy="-162" rx="4" ry="3" fill="#ff4400" opacity=".9"/>
+  <circle cx="-7" cy="-162" r="1.5" fill="#fff"/>
+  <circle cx="7" cy="-162" r="1.5" fill="#fff"/>
+  <!-- Sword -->
+  <rect x="-3" y="-80" width="6" height="80" rx="1" fill="#888" transform="rotate(-15)"/>
+  <rect x="-10" y="-82" width="20" height="5" rx="1" fill="#aaa" transform="rotate(-15)"/>
+  <rect x="-2" y="-160" width="4" height="80" rx="1" fill="url(#c1bg)" opacity=".3" transform="rotate(-15)" filter="url(#c1gf)"/>
+</g>
+<!-- Fire particles -->
+<circle cx="60" cy="170" r="3" fill="#ff6600" opacity=".7" filter="url(#c1gf)"/>
+<circle cx="75" cy="155" r="2" fill="#ff8800" opacity=".6" filter="url(#c1gf)"/>
+<circle cx="140" cy="165" r="3" fill="#ff4400" opacity=".7" filter="url(#c1gf)"/>
+<circle cx="128" cy="150" r="2" fill="#ff6600" opacity=".5" filter="url(#c1gf)"/>
+<!-- Title bar -->
+<rect x="0" y="230" width="200" height="50" fill="#0a0200" opacity=".92"/>
+<rect x="0" y="230" width="200" height="2" fill="#ff6600" opacity=".8"/>
+<text x="100" y="252" text-anchor="middle" font-family="serif" font-size="11" font-weight="bold" fill="#ff8800" letter-spacing="1">NINE STAR HEGEMON</text>
+<text x="100" y="268" text-anchor="middle" font-family="serif" font-size="9" fill="#ff6600" opacity=".9">BODY ART · 九星霸体诀</text>
+<!-- Status badge -->
+<rect x="4" y="4" width="76" height="16" rx="3" fill="#1a6b2a" opacity=".9"/>
+<text x="42" y="15.5" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#4ade80">連載中</text>
+</svg>`;
+    },
+    2: () => {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+<defs>
+  <linearGradient id="c2bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#04060f"/><stop offset="60%" stop-color="#0d1128"/><stop offset="100%" stop-color="#1a1a3d"/></linearGradient>
+  <radialGradient id="c2glow" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#4466ff" stop-opacity="0.5"/><stop offset="100%" stop-color="#4466ff" stop-opacity="0"/></radialGradient>
+  <filter id="c2f"><feGaussianBlur stdDeviation="2"/></filter>
+</defs>
+<rect width="200" height="280" fill="url(#c2bg)"/>
+<rect width="200" height="280" fill="url(#c2glow)"/>
+<!-- Many floating races / silhouettes -->
+<ellipse cx="100" cy="130" rx="65" ry="65" fill="none" stroke="#4466ff" stroke-width="0.5" opacity="0.3"/>
+<ellipse cx="100" cy="130" rx="45" ry="45" fill="none" stroke="#6688ff" stroke-width="0.5" opacity="0.4"/>
+<!-- Book with energy -->
+<g transform="translate(100,145)">
+  <rect x="-35" y="-45" width="32" height="45" rx="2" fill="#1a2040" stroke="#4466ff" stroke-width="1"/>
+  <rect x="-3" y="-45" width="38" height="45" rx="2" fill="#1e2550" stroke="#4466ff" stroke-width="1"/>
+  <!-- Book pages -->
+  <line x1="-3" y1="-40" x2="-3" y2="0" stroke="#6688ff" stroke-width="2"/>
+  <!-- Glowing text lines -->
+  <rect x="-30" y="-38" width="24" height="2" rx="1" fill="#4466ff" opacity=".6"/>
+  <rect x="-30" y="-32" width="20" height="2" rx="1" fill="#4466ff" opacity=".5"/>
+  <rect x="-30" y="-26" width="22" height="2" rx="1" fill="#4466ff" opacity=".6"/>
+  <rect x="2" y="-38" width="28" height="2" rx="1" fill="#8899ff" opacity=".7"/>
+  <rect x="2" y="-32" width="24" height="2" rx="1" fill="#8899ff" opacity=".6"/>
+  <rect x="2" y="-26" width="26" height="2" rx="1" fill="#8899ff" opacity=".7"/>
+  <!-- Energy burst from book -->
+  <circle cx="0" cy="-22" r="15" fill="#4466ff" opacity="0.15" filter="url(#c2f)"/>
+  <circle cx="0" cy="-22" r="8" fill="#6688ff" opacity="0.2" filter="url(#c2f)"/>
+</g>
+<!-- Character reading - scholar type -->
+<g transform="translate(100,160)">
+  <rect x="-6" y="-85" width="12" height="30" rx="3" fill="#c8956c"/>
+  <ellipse cx="0" cy="-100" rx="16" ry="18" fill="#c8956c"/>
+  <!-- Scholar robe - white/silver -->
+  <path d="M-20,-85 Q-22,-55 -25,-20 L25,-20 Q22,-55 20,-85 Z" fill="#e8e8f0"/>
+  <path d="M-20,-85 Q-40,-75 -42,-50 L-28,-48 Q-26,-65 -18,-75 Z" fill="#d0d0e0"/>
+  <path d="M20,-85 Q40,-75 42,-50 L28,-48 Q26,-65 18,-75 Z" fill="#d0d0e0"/>
+  <!-- Hair - scholarly ponytail -->
+  <path d="M-14,-112 Q-20,-105 -18,-95 L-12,-96 Q-10,-102 -10,-110 Z" fill="#111"/>
+  <path d="M14,-112 Q20,-105 18,-95 L12,-96 Q10,-102 10,-110 Z" fill="#111"/>
+  <path d="M-8,-118 Q0,-128 8,-118 Q6,-110 0,-112 Q-6,-110 -8,-118Z" fill="#111"/>
+  <rect x="-2" y="-128" width="4" height="20" rx="2" fill="#111"/>
+  <circle cx="0" cy="-128" r="3" fill="#4466ff" opacity=".8"/>
+  <!-- Eyes -->
+  <ellipse cx="-6" cy="-102" rx="3" ry="2" fill="#4466ff"/>
+  <ellipse cx="6" cy="-102" rx="3" ry="2" fill="#4466ff"/>
+  <!-- Multiple race auras -->
+  <circle cx="-50" cy="-60" r="10" fill="#ff4444" opacity=".3" filter="url(#c2f)"/>
+  <circle cx="50" cy="-60" r="10" fill="#44ff88" opacity=".3" filter="url(#c2f)"/>
+  <circle cx="-45" cy="-30" r="8" fill="#ffaa00" opacity=".3" filter="url(#c2f)"/>
+  <circle cx="45" cy="-30" r="8" fill="#aa44ff" opacity=".3" filter="url(#c2f)"/>
+</g>
+<!-- Stars / particles -->
+<circle cx="30" cy="40" r="1.5" fill="#8899ff" opacity=".8"/><circle cx="170" cy="30" r="1" fill="#aabbff" opacity=".7"/><circle cx="15" cy="80" r="1" fill="#6677ff" opacity=".6"/><circle cx="185" cy="90" r="1.5" fill="#8899ff" opacity=".8"/>
+<rect x="0" y="230" width="200" height="50" fill="#04060f" opacity=".95"/>
+<rect x="0" y="230" width="200" height="2" fill="#4466ff" opacity=".8"/>
+<text x="100" y="250" text-anchor="middle" font-family="serif" font-size="10.5" font-weight="bold" fill="#8899ff" letter-spacing="1">TRIBULATION OF</text>
+<text x="100" y="265" text-anchor="middle" font-family="serif" font-size="10.5" font-weight="bold" fill="#6688ff">MYRIAD RACES</text>
+<rect x="4" y="4" width="76" height="16" rx="3" fill="#1a6b2a" opacity=".9"/>
+<text x="42" y="15.5" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#4ade80">連載中</text>
+</svg>`;
+    },
+    3: () => {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+<defs>
+  <linearGradient id="c3bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#050200"/><stop offset="50%" stop-color="#1e0c00"/><stop offset="100%" stop-color="#3d1800"/></linearGradient>
+  <radialGradient id="c3glow" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#ffd700" stop-opacity="0.5"/><stop offset="100%" stop-color="#ffd700" stop-opacity="0"/></radialGradient>
+  <filter id="c3f"><feGaussianBlur stdDeviation="2"/></filter>
+  <filter id="c3f2"><feGaussianBlur stdDeviation="1"/></filter>
+</defs>
+<rect width="200" height="280" fill="url(#c3bg)"/>
+<rect width="200" height="280" fill="url(#c3glow)"/>
+<!-- Golden throne rays -->
+<g transform="translate(100,100)" opacity="0.25">
+  <line x1="0" y1="0" x2="0" y2="-100" stroke="#ffd700" stroke-width="1"/><line x1="0" y1="0" x2="70" y2="-70" stroke="#ffd700" stroke-width="1"/><line x1="0" y1="0" x2="100" y2="0" stroke="#ffd700" stroke-width="1"/><line x1="0" y1="0" x2="70" y2="70" stroke="#ffd700" stroke-width="1"/><line x1="0" y1="0" x2="-70" y2="-70" stroke="#ffd700" stroke-width="1"/><line x1="0" y1="0" x2="-100" y2="0" stroke="#ffd700" stroke-width="1"/><line x1="0" y1="0" x2="-70" y2="70" stroke="#ffd700" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="100" stroke="#ffd700" stroke-width="1"/>
+</g>
+<!-- Emperor on throne - imposing figure -->
+<g transform="translate(100,200)">
+  <!-- Throne base -->
+  <path d="M-50,10 L50,10 L40,-10 L-40,-10 Z" fill="#2a1a00"/>
+  <rect x="-50" y="-15" width="100" height="8" rx="2" fill="#3d2800" stroke="#ffd700" stroke-width=".5"/>
+  <!-- Throne back -->
+  <path d="M-35,-15 L-40,-80 L40,-80 L35,-15 Z" fill="#2a1a00" stroke="#ffd700" stroke-width=".8"/>
+  <!-- Throne ornament -->
+  <path d="M-5,-78 L0,-95 L5,-78" fill="#ffd700" opacity=".8"/>
+  <circle cx="0" cy="-97" r="4" fill="#ffd700"/>
+  <!-- Legs -->
+  <rect x="-18" y="-60" width="12" height="40" rx="3" fill="#1a0a00"/>
+  <rect x="6" y="-60" width="12" height="40" rx="3" fill="#1a0a00"/>
+  <!-- Body - emperor robe, elaborate -->
+  <path d="M-28,-135 Q-30,-95 -32,-60 L32,-60 Q30,-95 28,-135 Z" fill="#1a0800"/>
+  <path d="M-22,-135 Q-10,-125 0,-128 Q10,-125 22,-135 L18,-60 L-18,-60 Z" fill="#2d1400"/>
+  <!-- Golden robe trim -->
+  <path d="M-28,-135 L-22,-135" stroke="#ffd700" stroke-width="1.5"/><path d="M22,-135 L28,-135" stroke="#ffd700" stroke-width="1.5"/>
+  <rect x="-18" y="-75" width="36" height="4" rx="1" fill="#ffd700" opacity=".7"/>
+  <path d="M-18,-60 L18,-60" stroke="#ffd700" stroke-width="1.5" opacity=".6"/>
+  <!-- Dragon emblem on chest -->
+  <path d="M-8,-110 Q0,-118 8,-110 Q5,-102 0,-104 Q-5,-102 -8,-110Z" fill="#ffd700" opacity=".8"/>
+  <!-- Arms - one raised commandingly -->
+  <path d="M28,-135 Q50,-125 55,-100 Q50,-94 44,-96 Q42,-115 22,-125 Z" fill="#1a0800"/>
+  <path d="M-28,-135 Q-45,-128 -48,-110 Q-44,-104 -38,-107 Q-38,-120 -22,-128 Z" fill="#1a0800"/>
+  <!-- Raised hand with power -->
+  <circle cx="54" cy="-96" r="7" fill="#ffd700" opacity=".9" filter="url(#c3f2)"/>
+  <circle cx="54" cy="-96" r="12" fill="#ffa000" opacity=".3" filter="url(#c3f)"/>
+  <!-- Neck -->
+  <rect x="-6" y="-148" width="12" height="16" rx="3" fill="#b07840"/>
+  <!-- Head -->
+  <ellipse cx="0" cy="-163" rx="17" ry="19" fill="#b07840"/>
+  <!-- Crown -->
+  <rect x="-18" y="-182" width="36" height="10" rx="1" fill="#ffd700"/>
+  <path d="M-18,-182 L-12,-196 L-6,-182" fill="#ffd700"/><path d="M-3,-182 L0,-198 L3,-182" fill="#ffd700"/><path d="M6,-182 L12,-196 L18,-182" fill="#ffd700"/>
+  <circle cx="-12" cy="-196" r="2" fill="#ff4444"/><circle cx="0" cy="-198" r="2.5" fill="#ff4444"/><circle cx="12" cy="-196" r="2" fill="#ff4444"/>
+  <!-- Eyes - piercing golden -->
+  <ellipse cx="-6" cy="-165" rx="4" ry="3" fill="#ffd700"/>
+  <ellipse cx="6" cy="-165" rx="4" ry="3" fill="#ffd700"/>
+  <circle cx="-6" cy="-165" r="1.5" fill="#111"/>
+  <circle cx="6" cy="-165" r="1.5" fill="#111"/>
+  <!-- Hair -->
+  <path d="M-17,-170 Q-22,-162 -20,-152 L-14,-153 Q-14,-163 -14,-172 Z" fill="#111"/>
+  <path d="M17,-170 Q22,-162 20,-152 L14,-153 Q14,-163 14,-172 Z" fill="#111"/>
+</g>
+<!-- Golden particles -->
+<circle cx="40" cy="100" r="2" fill="#ffd700" opacity=".6" filter="url(#c3f2)"/>
+<circle cx="160" cy="120" r="2.5" fill="#ffa000" opacity=".7" filter="url(#c3f2)"/>
+<circle cx="25" cy="160" r="1.5" fill="#ffd700" opacity=".5"/>
+<circle cx="175" cy="155" r="1.5" fill="#ffd700" opacity=".5"/>
+<rect x="0" y="230" width="200" height="50" fill="#050200" opacity=".95"/>
+<rect x="0" y="230" width="200" height="2" fill="#ffd700" opacity=".8"/>
+<text x="100" y="251" text-anchor="middle" font-family="serif" font-size="11" font-weight="bold" fill="#ffd700" letter-spacing="2">EMPEROR'S</text>
+<text x="100" y="268" text-anchor="middle" font-family="serif" font-size="11" font-weight="bold" fill="#ffa000">DOMINATION</text>
+<rect x="4" y="4" width="58" height="16" rx="3" fill="#1a3d6b" opacity=".9"/>
+<text x="33" y="15.5" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#60a5fa">完結</text>
+</svg>`;
+    },
+  };
 
-/* SAMPLE DATA */
-const novels = [
-{
-  id:1,
-  title:"最強の修仙者",
-  cover:"https://picsum.photos/200/300?1",
-  desc:"最弱から最強へ成り上がる修仙ストーリー。",
-  rating:"4.8",
-  chapters:12
-},
-{
-  id:2,
-  title:"無限システム",
-  cover:"https://picsum.photos/200/300?2",
-  desc:"システムを手に入れた男の成長物語。",
-  rating:"4.6",
-  chapters:10
-}
-];
+  const defaultCovers = [4,5,6,7,8,9,10,11,12];
+  const colorSchemes = {
+    4: {bg:"#08050f",bg2:"#150a28",acc:"#9933ff",acc2:"#cc66ff",ch:"💀",t:"LICH FOR HIRE",s:"亡灵雇佣",status:"連載中",statusColor:"#4ade80",statusBg:"#1a6b2a"},
+    5: {bg:"#0a0014",bg2:"#200030",acc:"#dd00ff",acc2:"#ee88ff",ch:"⚡",t:"TALES OF DEMONS",s:"天蚕土豆 · 妖神记",status:"連載中",statusColor:"#4ade80",statusBg:"#1a6b2a"},
+    6: {bg:"#020f04",bg2:"#0a2810",acc:"#00ee44",acc2:"#66ff99",ch:"🗡",t:"MARTIAL WORLD",s:"武炼巅峰",status:"完結",statusColor:"#60a5fa",statusBg:"#1a3d6b"},
+    7: {bg:"#020610",bg2:"#061428",acc:"#0066ff",acc2:"#44aaff",ch:"❄",t:"AGAINST THE GODS",s:"逆天邪神",status:"連載中",statusColor:"#4ade80",statusBg:"#1a6b2a"},
+    8: {bg:"#020408",bg2:"#060e20",acc:"#1155ff",acc2:"#5588ff",ch:"🐉",t:"COILING DRAGON",s:"盘龙",status:"完結",statusColor:"#60a5fa",statusBg:"#1a3d6b"},
+    9: {bg:"#100202",bg2:"#280606",acc:"#ff2200",acc2:"#ff6644",ch:"🔥",t:"BATTLE THROUGH",s:"HEAVENS · 斗破苍穹",status:"完結",statusColor:"#60a5fa",statusBg:"#1a3d6b"},
+    10:{bg:"#0f0308",bg2:"#280810",acc:"#cc1155",acc2:"#ff4488",ch:"💎",t:"DOULUO DALU",s:"斗罗大陆",status:"完結",statusColor:"#60a5fa",statusBg:"#1a3d6b"},
+    11:{bg:"#0c0c00",bg2:"#1e1e00",acc:"#ccaa00",acc2:"#ffdd44",ch:"☀",t:"TRUE MARTIAL WORLD",s:"真武世界",status:"完結",statusColor:"#60a5fa",statusBg:"#1a3d6b"},
+    12:{bg:"#030a03",bg2:"#0a200a",acc:"#008844",acc2:"#44cc88",ch:"🌿",t:"THE GREAT RULER",s:"大主宰",status:"完結",statusColor:"#60a5fa",statusBg:"#1a3d6b"},
+  };
 
-let currentNovel = null;
-let currentChapter = 0;
-
-/* LOAD HOME */
-function loadHome(){
-  const container = document.getElementById('popular-scroll');
-  container.innerHTML = novels.map(n=>`
-    <div class="novel-card" onclick="openDetail(${n.id})">
-      <div class="novel-cover-wrap">
-        <img src="${n.cover}">
-      </div>
-      <div class="novel-title">${n.title}</div>
-      <div class="novel-rating">⭐ ${n.rating}</div>
-    </div>
-  `).join('');
-}
-
-/* DETAIL */
-function openDetail(id){
-  currentNovel = novels.find(n=>n.id===id);
-
-  document.getElementById('detail-title').innerText = currentNovel.title;
-  document.getElementById('detail-cover-img').src = currentNovel.cover;
-  document.getElementById('detail-hero-bg').src = currentNovel.cover;
-  document.getElementById('detail-desc').innerText = currentNovel.desc;
-  document.getElementById('detail-rating').innerText = currentNovel.rating;
-  document.getElementById('detail-chapters').innerText = currentNovel.chapters;
-
-  const list = document.getElementById('chapter-list');
-  list.innerHTML = '';
-
-  for(let i=1;i<=currentNovel.chapters;i++){
-    list.innerHTML += `
-      <div class="chapter-item" onclick="readChapter(${i})">
-        <div>Chapter ${i}</div>
-        <div>›</div>
-      </div>
-    `;
+  if (covers[id]) {
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(covers[id]());
   }
 
+  // Generic beautiful cover for IDs 4-12
+  const c = colorSchemes[id] || colorSchemes[4];
+  const numParticles = 20;
+  let particles = '';
+  for(let i=0;i<numParticles;i++){
+    const x=10+(i*137)%180, y=20+(i*97)%200, r=0.8+(i%4)*0.6, op=0.3+(i%5)*0.12;
+    particles += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c.acc}" opacity="${op}"/>`;
+  }
+  let rays = '';
+  for(let i=0;i<12;i++){
+    const a=(i/12)*Math.PI*2, x2=100+Math.cos(a)*110, y2=115+Math.sin(a)*100;
+    rays += `<line x1="100" y1="115" x2="${x2}" y2="${y2}" stroke="${c.acc}" stroke-width="0.5" opacity="0.15"/>`;
+  }
+  // Build a character silhouette
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+<defs>
+  <linearGradient id="gbg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c.bg}"/><stop offset="100%" stop-color="${c.bg2}"/></linearGradient>
+  <radialGradient id="gglow${id}" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="${c.acc}" stop-opacity="0.45"/><stop offset="100%" stop-color="${c.acc}" stop-opacity="0"/></radialGradient>
+  <filter id="gf${id}"><feGaussianBlur stdDeviation="2"/></filter>
+  <filter id="gf2${id}"><feGaussianBlur stdDeviation="1"/></filter>
+</defs>
+<rect width="200" height="280" fill="url(#gbg${id})"/>
+<rect width="200" height="280" fill="url(#gglow${id})"/>
+${rays}
+<!-- Aura circles -->
+<circle cx="100" cy="115" r="70" fill="none" stroke="${c.acc}" stroke-width="0.8" opacity="0.25"/>
+<circle cx="100" cy="115" r="50" fill="none" stroke="${c.acc2}" stroke-width="0.6" opacity="0.3"/>
+<circle cx="100" cy="115" r="30" fill="${c.acc}" opacity="0.12" filter="url(#gf${id})"/>
+${particles}
+<!-- Character silhouette -->
+<g transform="translate(100,195)">
+  <rect x="-12" y="-55" width="11" height="50" rx="3" fill="${c.bg2}"/>
+  <rect x="1" y="-55" width="11" height="50" rx="3" fill="${c.bg2}"/>
+  <path d="M-24,-125 Q-26,-90 -28,-55 L28,-55 Q26,-90 24,-125 Z" fill="${c.bg}" stroke="${c.acc}" stroke-width="0.5" stroke-opacity="0.5"/>
+  <path d="M-24,-125 Q-44,-115 -46,-85 L-30,-83 Q-28,-105 -20,-118 Z" fill="${c.bg2}"/>
+  <path d="M24,-125 Q44,-115 46,-85 L30,-83 Q28,-105 20,-118 Z" fill="${c.bg2}"/>
+  <circle cx="-44" cy="-82" r="7" fill="${c.acc}" opacity="0.9" filter="url(#gf2${id})"/>
+  <circle cx="44" cy="-82" r="7" fill="${c.acc2}" opacity="0.9" filter="url(#gf2${id})"/>
+  <rect x="-6" y="-140" width="12" height="17" rx="4" fill="#b07848"/>
+  <ellipse cx="0" cy="-155" rx="17" ry="19" fill="#b07848"/>
+  <path d="M-16,-150 Q-24,-140 -22,-128 L-14,-130 Q-12,-140 -13,-152 Z" fill="#111"/>
+  <path d="M16,-150 Q24,-140 22,-128 L14,-130 Q12,-140 13,-152 Z" fill="#111"/>
+  <path d="M-6,-173 Q0,-183 6,-173 Q4,-164 0,-166 Q-4,-164 -6,-173Z" fill="#111"/>
+  <ellipse cx="-6" cy="-157" rx="4" ry="3" fill="${c.acc}" opacity="0.95"/>
+  <ellipse cx="6" cy="-157" rx="4" ry="3" fill="${c.acc}" opacity="0.95"/>
+  <circle cx="-6" cy="-157" r="1.5" fill="#fff" opacity="0.8"/>
+  <circle cx="6" cy="-157" r="1.5" fill="#fff" opacity="0.8"/>
+  <!-- Energy weapon -->
+  <rect x="-2" y="-185" width="4" height="130" rx="2" fill="${c.acc}" opacity="0.7" filter="url(#gf2${id})" transform="rotate(8)"/>
+  <rect x="-8" y="-80" width="16" height="4" rx="1" fill="${c.acc2}" opacity="0.8" transform="rotate(8)"/>
+</g>
+<rect x="0" y="230" width="200" height="50" fill="${c.bg}" opacity="0.95"/>
+<rect x="0" y="230" width="200" height="2" fill="${c.acc}" opacity="0.8"/>
+<text x="100" y="251" text-anchor="middle" font-family="serif" font-size="10" font-weight="bold" fill="${c.acc2}" letter-spacing="1">${c.t}</text>
+<text x="100" y="267" text-anchor="middle" font-family="serif" font-size="9" fill="${c.acc}" opacity="0.85">${c.s}</text>
+<rect x="4" y="4" width="${c.status==="完結"?48:76}" height="16" rx="3" fill="${c.statusBg}" opacity=".9"/>
+<text x="${c.status==="完結"?28:42}" y="15.5" text-anchor="middle" font-family="sans-serif" font-size="9" fill="${c.statusColor}">${c.status}</text>
+</svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+const NOVELS = [
+  {
+    id:1, title:"Nine Star Hegemon Body Art", titleID:"九星覇体の術",
+    author:"Ordinary Magician", genre:"仙侠", status:"連載中", statusID:"連載中",
+    rating:70, chapters:4800, views:"12.4M", cover: makeCover(1),
+    bannerBg:"linear-gradient(135deg,#1a0a00,#3d1a00,#1a0800)",
+    desc:"霊力を失った青年が、古代の修行術を発見し、その運命を永遠に変える。",
+    tags:["アクション","修行","ハーレム"], badge:"HOT"
+  },
+  {
+    id:2, title:"Tribulation of Myriad Races", titleID:"万族の試練",
+    author:"Lazy Cat under the Tree", genre:"仙侠", status:"連載中", statusID:"連載中",
+    rating:80, chapters:3200, views:"8.9M", cover: makeCover(2),
+    bannerBg:"linear-gradient(135deg,#0a0a1a,#1a1a3d,#0a0a18)",
+    desc:"数百の種族が争う世界で、一人の平凡な人間が伝説へと成り上がる。",
+    tags:["ファンタジー","多種族","冒険"], badge:"TOP"
+  },
+  {
+    id:3, title:"Emperor's Domination", titleID:"皇帝の覇道",
+    author:"Yan Bi Xiao Sheng", genre:"仙侠", status:"完結", statusID:"完結",
+    rating:75, chapters:5400, views:"15.2M", cover: makeCover(3),
+    bannerBg:"linear-gradient(135deg,#1a0800,#3d1500,#1a0a00)",
+    desc:"数百万年を生きたリー・チーウェイが弱き少年として転生し、覇道の旅を始める。",
+    tags:["仙侠","転生","無双"], badge:null
+  },
+  {
+    id:4, title:"Lich For Hire", titleID:"リッチ・フォー・ハイヤー",
+    author:"Ciwei Mao Yuedu", genre:"ファンタジー", status:"連載中", statusID:"連載中",
+    rating:85, chapters:420, views:"2.1M", cover: makeCover(4),
+    bannerBg:"linear-gradient(135deg,#080a10,#1a1a2e,#08080f)",
+    desc:"狡猾なリッチが予想外の方法で権力への道を切り開く。",
+    tags:["ファンタジー","コメディ","アンデッド"], badge:"NEW"
+  },
+  {
+    id:5, title:"Tales of Demons & Gods", titleID:"妖神記",
+    author:"Mad Snail", genre:"仙侠", status:"連載中", statusID:"連載中",
+    rating:82, chapters:502, views:"22.1M", cover: makeCover(5),
+    bannerBg:"linear-gradient(135deg,#1a0d1a,#2e0a2e,#120812)",
+    desc:"ニエ・リーは前世の記憶と力を持ったまま若き日々に転生し、運命に立ち向かう。",
+    tags:["転生","アクション","仙侠"], badge:"CLASSIC"
+  },
+  {
+    id:6, title:"Martial World", titleID:"武煉の頂点",
+    author:"Cocooned Cow", genre:"武侠", status:"完結", statusID:"完結",
+    rating:78, chapters:2341, views:"18.3M", cover: makeCover(6),
+    bannerBg:"linear-gradient(135deg,#041a08,#0a3010,#041008)",
+    desc:"リン・ミンは謎の立方体の破片を発見し、武の無限の可能性を開花させる。",
+    tags:["アクション","武侠","冒険"], badge:null
+  },
+  {
+    id:7, title:"Against the Gods", titleID:"逆天邪神",
+    author:"Mars Gravity", genre:"仙侠", status:"連載中", statusID:"連載中",
+    rating:76, chapters:1903, views:"19.7M", cover: makeCover(7),
+    bannerBg:"linear-gradient(135deg,#080d1a,#10183d,#060a14)",
+    desc:"裏切られたユン・チェーが輪廻の鏡の力を持って復活し、復讐の旅に出る。",
+    tags:["ハーレム","アクション","復讐"], badge:null
+  },
+  {
+    id:8, title:"Coiling Dragon", titleID:"盤龍",
+    author:"I Eat Tomatoes", genre:"ファンタジー", status:"完結", statusID:"完結",
+    rating:90, chapters:806, views:"25.4M", cover: makeCover(8),
+    bannerBg:"linear-gradient(135deg,#040810,#0a1428,#040810)",
+    desc:"リンレー・バルークが聖なる龍の魂を宿した翡翠のペンダントを見つけ、運命が一変する。",
+    tags:["名作","ファンタジー","龍"], badge:"CLASSIC"
+  },
+  {
+    id:9, title:"Battle Through the Heavens", titleID:"闘破蒼穹",
+    author:"Heavenly Silkworm Potato", genre:"仙侠", status:"完結", statusID:"完結",
+    rating:74, chapters:1648, views:"16.8M", cover: makeCover(9),
+    bannerBg:"linear-gradient(135deg,#1a0404,#3d0808,#1a0404)",
+    desc:"シャオ・ヤンはすべての力を失うが、謎の魂の助けを借りて灰の中から蘇る。",
+    tags:["仙侠","Drama","アクション"], badge:null
+  },
+  {
+    id:10, title:"Douluo Dalu", titleID:"闘羅大陸",
+    author:"Tang Jia San Shao", genre:"アクション", status:"完結", statusID:"完結",
+    rating:79, chapters:396, views:"14.2M", cover: makeCover(10),
+    bannerBg:"linear-gradient(135deg,#100408,#280810,#100408)",
+    desc:"タン・サンが闘羅大陸に転生し、史上最高の魂師へと成長する。",
+    tags:["冒険","魂師","名作"], badge:null
+  },
+  {
+    id:11, title:"True Martial World", titleID:"真武世界",
+    author:"Cocooned Cow", genre:"仙侠", status:"完結", statusID:"完結",
+    rating:77, chapters:1669, views:"13.5M", cover: makeCover(11),
+    bannerBg:"linear-gradient(135deg,#0f0f00,#1e1e00,#0f0f00)",
+    desc:"イー・ユンが前世の力を武器に修行世界の頂点を目指す。",
+    tags:["仙侠","ハーレム","ファンタジー"], badge:null
+  },
+  {
+    id:12, title:"The Great Ruler", titleID:"大主宰",
+    author:"Heavenly Silkworm Potato", genre:"仙侠", status:"完結", statusID:"完結",
+    rating:76, chapters:1580, views:"11.9M", cover: makeCover(12),
+    bannerBg:"linear-gradient(135deg,#061006,#0c200c,#061006)",
+    desc:"ムー・チェンが数々の試練を乗り越え、無限の霊の世界の支配者を目指す。",
+    tags:["アクション","学院","仙侠"], badge:"PREMIUM"
+  },
+];
+
+
+
+// ── PRE-WRITTEN CHAPTER CONTENT (English) ──
+const CHAPTER_CONTENT = {
+  "1-1": `The morning mist still clung to the peaks of Dragon Blood Mountain when Long Chen opened his eyes. Pain greeted him first — a bone-deep ache radiating outward from his shattered dantian, like shards of broken jade grinding against the walls of his meridians. He lay on the cold stone floor, staring up at a cracked ceiling he recognized from a lifetime ago.\n\nIn his previous existence, Long Chen had stood at the pinnacle of the Nine Heavens and Ten Earths. He had cultivated the Nine Star Hegemon Body Art to its final, transcendent stage, becoming one of the most feared warriors across countless worlds. But that life had ended in betrayal — surrounded by those he once called brothers, his cultivation shattered, his body destroyed.\n\nYet here he was. Seventeen years old again. Powerless. He pressed two fingers against the center of his chest and reached inward. Deep within the ruined landscape of his spiritual sea, he sensed it — faint as a dying ember, but unmistakably real. A single star. Dim and flickering, barely more than a spark against the vast darkness.\n\nLong Chen sat up slowly and smiled. In his past life, it had taken him three agonizing years to reach this point from nothing. This time, armed with the memories of ten thousand battles and the cultivation insights of a lifetime, he would need far less. The enemies who had destroyed him before had no idea what was coming for them.\n\n"So," he murmured to the empty room, his voice quiet but filled with an iron certainty, "let us begin again."`,
+
+  "1-2": `The Sacred Family compound sat at the heart of Yun Qi City like a jewel in a crown — its walls high, its guards numerous, its arrogance absolute. Long Chen passed through its outer gates the following morning with his hands clasped behind his back and a pleasant expression on his face that made the doormen deeply uneasy.\n\nHe found Sacred Yan in the training courtyard, as expected. The young master was showing off for a cluster of admirers, his Silver rank spiritual energy crackling visibly around his fists as he shattered practice stones with casual contempt. He was talented by any ordinary measure. By Long Chen's measure, he was an insect who had not yet learned to fear the sky.\n\n"Long Chen." Sacred Yan's eyes narrowed when he spotted him. "You have some nerve showing your face here. Everyone in the city knows you lost your cultivation. What exactly are you hoping to accomplish by coming to the Sacred Family compound?" The admirers laughed on cue, their mockery bouncing off the stone walls like music.\n\nLong Chen did not react. He simply looked at Sacred Yan for a long, measured moment — the kind of look that a man gives a minor inconvenience he is deciding whether to bother addressing. "I came to give you some advice," he said at last. "Your family's mining contracts in the northern valley. Sell them. All of them. Within the month."\n\nThe laughter died. Sacred Yan stared at him. "What are you talking about?" Long Chen had already turned to leave. "You'll understand soon enough," he said pleasantly. "Consider it a parting gift."`,
+
+  "2-1": `Su Yu had always known that being human in the Myriad Races world meant starting at the bottom of everything — talent, status, resources, and hope. Humans were not the weakest race, technically. They were simply considered the most unremarkable, sandwiched between species with natural spiritual bodies, ancient bloodlines, or abilities that made battle arts look like child's play.\n\nHe sat in Study Hall Number Nine of the Ninth High School, surrounded by students from seventeen different races, and read the same line of his textbook for the fourth time without absorbing a single word. Across the room, a young man from the Rock Lizard clan was casually memorizing combat techniques that humans required weeks to understand. Next to Su Yu, a girl with the faint silver markings of the Moon Hare tribe was already practicing her racial skill under the desk.\n\nSu Yu closed the textbook. He pulled out a worn notebook instead — filled not with standard curriculum but with his own private research. For three years he had been studying the suppression of humanity, the ancient records that explained why humans had once stood at the apex of the Myriad Races world before their fall. The answers, he was increasingly certain, had something to do with willpower.\n\nHe pressed his palm flat against the desk and focused. This was not a recognized cultivation method. No teacher had approved it. But something in the back of his mind — a feeling more than a thought — told him that what he was reaching for was real, and waiting, and had always been waiting specifically for him. The air around his palm shimmered once. Faint. Barely visible. But there.`,
+
+  "3-1": `Ten billion years of memory is not something a human mind is built to hold. Li Qiye had long since ceased to be entirely human in any meaningful sense — he had watched empires dissolve into dust, witnessed the death of immortals who believed themselves eternal, and accumulated a weight of knowledge that would crush any ordinary cultivator into madness before his third century.\n\nAnd yet here he was, seventeen years old again, standing in a city whose name he had not thought of in several million years. His new body was weak. Profoundly, almost insultingly weak. He could feel the spiritual energy of this era pressing against him from all directions — richer than he remembered from this period, which was interesting — and his current vessel could barely absorb any of it.\n\nHe was not concerned. Li Qiye had been reborn before. Not often, and never by choice, but enough times to know the pattern. The body was a container. What mattered was what filled it. He reached inward and found the ember of his true self — compressed beyond imagination, but present, and already beginning to unfurl like a flower that had been waiting ten billion years for the right season.\n\n"Young master, are you well?" A servant girl had appeared in the doorway, watching him with visible alarm. He realized he had been standing motionless in the center of his room for what was, by the clock on the wall, approximately two hours. He looked at her with ancient eyes in a young face and smiled with a warmth that surprised them both. "Better than I have been in a very long time," he said truthfully.`,
+
+  "4-1": `The Bone Palace smelled of old magic and older ambition, which was exactly how Skeletal Lord Arveth liked it. He had spent four hundred years cultivating that specific atmosphere — the candles were rendered from the fat of defeated enemies, the walls were lined with the compressed remains of a thousand failed apprentices, and the throne itself was carved from the spine of a dragon that had made the catastrophic error of underestimating a lich.\n\nArveth examined his current predicament with the calm detachment that came from having survived considerably worse. He was, technically, dead. This was not news. He had been dead for four centuries and found the condition to have significant advantages over the alternative. What was new was that his phylactery had been cracked — not broken, not destroyed, but cracked — by the battle three days ago, which meant his immortality was temporarily compromised, his mana reserves were at thirty percent, and he had seventeen different factions who believed he was weakened enough to kill.\n\nHe needed resources. He needed them quickly. And he needed them from sources that would not immediately report his weakness to his enemies. He had, after considerable deliberation, arrived at a solution that he found deeply distasteful but undeniably practical: employment.\n\n"Send in the first applicant," he said to the skeleton standing at the door. The skeleton rattled acknowledgment and swung the doors open. A young woman entered, carrying a contract scroll and wearing the expression of someone who had either great courage or very poor judgment. Arveth folded his skeletal fingers together. "You wish to hire a lich," he said. "Tell me what you're willing to pay."`,
+
+  "5-1": `Nie Li remembered everything.\n\nThe memories came back the moment he opened his eyes in the Holy Orchid Institute's dormitory — not gradually, not in fragments, but all at once, a lifetime of knowledge pouring into a thirteen-year-old mind like a flood through a broken dam. He lay perfectly still for a long moment, breathing carefully, letting the torrent settle.\n\nHe had died. He remembered that clearly — the final battle in Nie family's stronghold, the Sage Emperor's overwhelming power, the demon beasts that tore through the city's last defenses while he fought to buy time for the survivors. He had died knowing it was not enough. Knowing that Glory City would fall.\n\nBut he was here. He was thirteen. The city was intact around him — he could hear it through the dormitory window, the sounds of a morning that, in the original timeline, he had not paid nearly enough attention to. His roommate Duan Jian was still asleep. The smell of breakfast was drifting from the institute's dining hall. A snow wind demon howled somewhere beyond the barrier walls, routine and harmless.\n\nNie Li sat up and smiled — not the desperate, grieving smile of a man who had watched everything he loved destroyed, but something quieter and more dangerous. He had ten thousand years of cultivation knowledge in his head and a thirteen-year-old body that the Sacred Family had written off as permanently weak. He thought of all the techniques he knew that wouldn't be invented for another five centuries. He thought of the demon spirit beasts that were just now sleeping in caves they didn't yet know would make them legendary. He thought of Ye Ziyun, who was probably in the library at this very moment, and who had never once in his original life known that he loved her until it was too late.\n\nThis time would be different. Every single thing about it.`,
+
+  "6-1": `The cube fell from the sky above the Realm of the Gods and shattered into ten thousand pieces, and the piece that fell toward Lin Ming was the size of a thumbnail and glowed with a light that had no color he could name.\n\nHe caught it without thinking — a reflex born from years of training — and felt it sink into his palm like water into dry earth. The sensation lasted less than a second. Then it was gone, absorbed, and he was standing alone in the ruins of the exhibition hall with the sounds of chaos fading around him and something fundamentally different about the space behind his sternum.\n\nLin Ming had lived in the Cloud Mist Sect for three years. He was not talented by any measure the sect recognized — no rare constitution, no powerful bloodline, no mystical encounter in childhood that had seeded his meridians with early-blooming spiritual roots. He had made it this far through a combination of stubbornness, an unusual capacity for pain, and a conviction that talent was simply effort that hadn't shown its results yet.\n\nHe pressed his fist against his chest and reached inward with his spiritual sense. There, nestled at the center of his dantian like something that had always belonged there, was a space he had never felt before — a small realm within himself, humming with a warmth that made his own spiritual energy seem like candlelight next to the sun. He pulled his hand back and stared at his palm.\n\n"What are you?" he asked quietly. The cube fragment did not answer. But somewhere deep in the newly formed space, he felt something stir, as if it had been waiting for exactly that question.`,
+
+  "7-1": `Yun Che died on a winter morning, surrounded by people he had trusted with his life.\n\nHe felt each betrayal land like a physical blow before the actual blows came — the shift in Chu Yuechan's expression, the moment when Xia Qingyue's eyes went cold, the silence from his sworn brothers that told him everything he needed to know. By the time the attacks began, he had already died a dozen times in his mind. The body was almost an afterthought.\n\nHe fell from the Heaven Basin Secret Realm with the Sky Poison Pearl still embedded in his body and the Mirror of Samsara shattered in his hands, and he thought, with remarkable clarity for a dying man, that he had made a catastrophic mistake in believing that power was the same thing as protection.\n\nThen he woke up.\n\nNot in the afterlife. Not in darkness. He woke in a body that was unmistakably his own, in a room he recognized from fifteen years ago, with the sound of his grandfather calling his name from somewhere downstairs and the smell of the Azure Cloud Continent's mountain air coming through a window he had not looked through since childhood. The Sky Poison Pearl was in his chest. The Mirror of Samsara was whole.\n\nYun Che lay on his back and catalogued everything that had been done to him by people he had loved, and felt the grief harden into something colder and more permanent. Then he sat up, rolled his shoulders, and began to plan. He had been given a second chance. He intended to use every second of it.`,
+
+  "8-1": `The Dragonblood Warrior clan had not produced a proper heir in three generations, and Linley Baruch had grown up inside that absence like a plant growing in thin soil — aware of it constantly, shaped by it in ways he could not always name.\n\nHe was eleven years old when his father pressed the green jade ring into his hands and told him it was the only thing left of their family's former glory. The jade was warm, oddly warm, with a depth to its color that shifted depending on the angle of the light. Linley wore it on his smallest finger and tried not to think about everything it represented.\n\nHe was twelve when the ring began to speak to him.\n\nNot in words, at first. It was more like a presence — a sense of vast age and contained power, waiting on the other side of a thin membrane. He mentioned it to no one. His teachers at the Ernst Institute were already watching him too carefully; the discovery that he might have some connection to an artifact of unknown origin would bring exactly the kind of attention his father had told him to avoid.\n\nHe was thirteen when the membrane broke. He was alone in the institute's meditation garden, deep in his daily practice, when the voice came through clear and unmistakable — gravelly, ancient, carrying in its tone the weight of someone who had lived so long that most of what he felt was amusement.\n\n"Not bad," the voice said. "For a mortal. You have something of your ancestors in you. Not much. But something." Linley opened his eyes slowly. "Who are you?" The ring pulsed once with warm light. "My name," said the voice, "is Doehring Cowart. And I have been waiting inside this ring for a very long time for someone worth teaching."`,
+  "1-3": `Sacred Yan could not sleep.
+
+He lay in his chambers staring at the ceiling, thinking about what Long Chen had said that morning. Sell the northern valley mining contracts. All of them. The advice was insane — three generations of Sacred patriarchs had built their influence on those contracts. Abandoning them would signal weakness to every rival family in the city.
+
+And yet he could not dismiss it. In six years of watching Long Chen across classrooms and courtyards, Yan had learned to read him. And this morning there had been something in Long Chen's eyes he could not name — not arrogance, not performance, but something older. The look of a man who had already seen how this story ended.
+
+He sat up and reached for writing paper. There were ways to quietly liquidate contracts without it looking like retreat. He would need to move carefully. He would need to move fast. And he would need to begin tomorrow, before he had time to talk himself out of it.
+
+Outside his window, the barrier walls of Glory City hummed their low, constant note against the dark. He wrote until dawn.`,
+
+  "1-4": `The Holy Orchid Institute library opened at dawn, and Nie Li was always the first student inside.
+
+He had spent three days reconstructing from memory every cultivation technique he had mastered in his previous life — filling notebooks with formations, alchemical formulas, soul beast behavioral patterns, and strategic analyses that the institute would not teach for another decade. He wrote quickly, without hesitation. Ten thousand years of knowledge flowed from memory to page as naturally as breathing.
+
+He was deep in this work when Ye Ziyun sat down across from him without asking. He looked up. She had a book open before her but she was watching him with that particular expression he remembered — sharp, curious, irritated by her own curiosity.
+
+You have changed, she said. Not as accusation but as observed fact.
+
+Yes, he agreed, and went back to writing.
+
+She waited, clearly expecting more. When none came, she frowned at her book, then at him. What are you writing? He looked up and smiled — genuinely, without performance. The future, he said. She decided privately that this was the most irritating answer she had ever received, and also that she intended to find out what he meant.`,
+
+  "1-5": `The first demon beast Nie Li bonded a Soul Ring from was a rank one Snow Wind Wolf, and he completed the binding in thirty minutes flat.
+
+His classmates watched in stunned silence. The process normally took beginners several hours of laborious spiritual attunement. Nie Li performed it with the calm efficiency of someone who had done the same thing several thousand times before — which, of course, he had.
+
+The Soul Ring that materialized was white, as expected. But the spiritual resonance it produced was not the thin output of a typical beginning student. It was steady, dense, already finely tuned to his cultivation pathways in ways that took most students months to achieve.
+
+Teacher Ye Mo had been standing at the back of the training field with his arms crossed. He did not speak during the binding or immediately after. He simply looked at Nie Li with the expression of a man who had taught long enough to recognize when something was not following the expected rules.
+
+Stay after class, he said. Nie Li nodded as though he had been expecting exactly this. He had been hoping for this conversation since his first day back.`,
+
+  "2-2": `The willpower examination was held on a Wednesday — the day that changed everything and almost changed nothing, simultaneously.
+
+Every student in the Ninth High School took the test in their third year. It measured baseline willpower as a predictor of cultivation potential. For human students, the results were almost invariably disappointing. The racial ceiling on human willpower was considered settled biological fact.
+
+Su Yu sat in the examination chamber and breathed steadily. The spiritual pressure device activated. Around him, classmates began to sweat and lose focus. The Moon Hare student dropped at 200 units — exceptional for her age. The Rock Lizard student reached 280 before his technique fractured.
+
+Su Yu did not move.
+
+The device kept climbing. At 400 units, the administrator looked up from her panel for the first time in years. At 450, she stood. At 500 — a number not calibrated into the display because no student had ever reached it — she quietly switched off the machine and wrote one word in her assessment notebook: Unprecedented.`,
+
+  "2-3": `Word spread through the Ninth High School with the speed of anything that contradicts established wisdom.
+
+By Thursday morning, every student who cared about cultivation rankings knew what Su Yu had done in the willpower chamber. By Friday, three senior students had stopped him in separate corridors to question him — not friendly curiosity, but the calculating attention of people reassessing a variable they had previously dismissed.
+
+Su Yu found this more interesting than threatening. He had been studying the dynamics of the Myriad Races world for three years. He understood that what he had demonstrated in that chamber was not just a test result; it was a declaration, made public before he was ready to make it. He needed to be careful about what came next.
+
+He returned to his private research. The willpower method he had stumbled onto was real, but it was also rough — a first approximation of something he could sense was more complete. He needed better materials. He needed better information. And he needed, he was increasingly certain, to find someone who knew more about what humans had been before their long decline.
+
+He opened the oldest text in the school library and began reading from the beginning.`,
+
+  "3-2": `Li Qiye walked through the morning market of the new city and catalogued everything with the precision of someone reading a familiar book.
+
+The spirit stone stall in the third row — the old man running it would discover something significant in his cellar in approximately eleven months. The medicine counter attendant was the grandmother of someone who would matter. The crying child by the fountain would grow into either a great hero or an irrelevant footnote; he had not decided yet whether to intervene.
+
+He paused at a weapons stall and picked up an ordinary sword. Competently made, spiritually inert, worth perhaps three silver marks. He held it feeling the weight of something that aspired to be more than it was, and set it back down.
+
+You are not here to buy a sword, observed the stallkeeper.
+
+No, Li Qiye agreed pleasantly. I am here to decide how much of this city I intend to save. He turned and walked back into the crowd, leaving the stallkeeper staring after him with the deeply unsettled feeling of having spoken with someone operating on a timeline no one else could see.`,
+
+  "4-2": `Her name was Mira Ashveil, she was twenty-three, she worked as a junior investigator for the Gray Mantle Society, and she had been waiting outside the Bone Palace for four hours before the skeleton doorman finally opened the gates.
+
+She had used the time productively. She counted six blind spots in the undead patrol rotation, identified two structural weaknesses in the eastern wall, and determined that the cursed ward on the main gate was keyed specifically to the living. She crossed the threshold anyway, because the job required it, and noted with professional satisfaction that the curse was not lethal.
+
+Arveth studied her across the length of his throne room and found himself mildly intrigued. Most applicants arrived either terrified or performing confidence to cover their terror. This woman appeared to be simply evaluating him. Making notes in some internal ledger.
+
+You have excellent composure for someone standing before a lich, he observed.
+
+You have excellent taste in cursed wards for someone who wants clients to actually reach you, she replied. The threshold hex announces visitors to your guards — so you have known I was coming for four hours.
+
+Three hours and forty-seven minutes, he corrected. He decided he was going to enjoy this negotiation.`,
+
+  "5-2": `Ye Ziyun had known Nie Li for six years, which she considered sufficient time to understand his limitations.
+
+He was clever — she had always acknowledged that, even when she would have preferred not to. He had an unusual talent for pattern recognition and a stubbornness that bordered on structural. But he was Unranked, and had been since the first Soul Awakening ceremony, and that was a fact that no amount of cleverness could change.
+
+So when he sat down across from her in the library and outlined, in calm systematic detail, a cultivation technique she had never seen documented anywhere, she experienced a complicated sequence of internal reactions that she was too disciplined to allow onto her face.
+
+Where did you find this? she asked.
+
+I worked it out.
+
+No one works out a complete intermediate cultivation method from first principles at thirteen.
+
+I did. He looked up and held her gaze with those strange steady eyes that had been bothering her for days. I can teach it to you. If you want.
+
+She looked at the notebook. The technique was extraordinary — she could see that from a cursory glance. She looked back at him. Why?
+
+His answer came without hesitation. Because you are going to need it.`,
+
+  "6-2": `Lin Ming's first visit to the Smelting Trial Chamber nearly destroyed him, and he considered it a partial success.
+
+The Chamber was a training facility of carefully regulated spiritual pressure and controlled combat trials, designed to push disciples to their limits without quite killing them. Most outer disciples visited once a month and left after twenty minutes with something bruised and their pride significantly damaged.
+
+Lin Ming stayed for four hours.
+
+He emerged with two fractured ribs, a hairline crack in his left scapula, spiritual depletion that would take three days to recover, and an expression that the waiting disciples later described as someone who had found exactly what they were looking for.
+
+The Cube fragment in his dantian had been active throughout. He could feel it processing — absorbing information about each impact, each failure, each moment his technique had broken under pressure. As he settled into recovery meditation outside the Chamber, the information returned to him as adjustments: Here is where you are wasting energy. Here is the correction.
+
+You are going to destroy yourself, said a quiet voice nearby. A girl with silver-white hair was watching him with concern mixed with irritation. I have been studying your form. Your meridian usage is incorrect.
+
+Lin Ming blinked. In all his months at the sect, no one had ever voluntarily offered instruction. Show me, he said.`,
+
+  "7-2": `The Sky Poison Pearl, Yun Che had learned through painful experience in his first life, was the most dangerous object on the Azure Cloud Continent and possibly in several of the realms beyond it.
+
+It was also integrated so deeply into his meridians that removing it would be approximately as practical as removing his own heart.
+
+He sat cross-legged on the floor of his childhood room and ran a careful internal survey. His cultivation base was exactly as weak as he remembered at this age — thin spiritual roots, slow absorption, a dantian so small that most assessment masters would politely suggest an alternative vocation. These were the weaknesses his enemies had exploited. The weaknesses he had spent a lifetime learning to overcome through methods other cultivators considered either brilliant or reckless depending on the outcome.
+
+Deep in his meridians, coiled around the base of his dantian, the Sky Poison Pearl pulsed once. Quietly. A greeting, or an acknowledgment.
+
+Yun Che placed his hand over his chest. In his first life he had spent years fearing the Pearl before finally understanding it was not a curse but a key. This time he intended to reach that understanding considerably sooner.
+
+We are going to do things differently, he told it. The Pearl pulsed again. He chose to interpret this as agreement.`,
+
+  "8-2": `Doehring Cowart was four thousand years old and had spent the last four hundred inside a jade ring, which had given him considerable time to contemplate the nature of patience.
+
+He had met twelve previous bearers of the Coiling Dragon Ring. Most had been adequate. Two had been genuinely talented. One had come close to what he was looking for before her death in a political conflict he had been helpless to prevent.
+
+Linley Baruch was thirteen years old, with a Dragonblood Warrior constitution that had gone completely unactivated through a century of family decline. His potential was locked behind a door he did not yet know existed. By any standard assessment he was unremarkable.
+
+And yet.
+
+Doehring had learned across millennia of observation that potential was not the most important variable. The most important variable was what a person did when they discovered they had been standing in front of a door their entire life.
+
+Linley had not panicked. He had not performed excitement. He had asked, with the calm directness of someone much older, what Doehring could teach him and what it would cost.
+
+The cost, Doehring said, is effort beyond what you currently believe yourself capable of.
+
+Linley considered this. That sounds like every worthwhile thing, he said.
+
+Doehring laughed — genuinely, for the first time in four centuries. Perhaps, he thought, this one would be different.`,
+
+  "10-4": `シャオ・ウーがタン・サンに初めて自分の武魂を見せたのは、知り合って一ヶ月後だった。\n\n二人は放課後に校庭の隅で修行することが習慣になっていた。シャオ・ウーは最初は警戒していたが、タン・サンが静かで押し付けがましくないことを確認してから、少しずつ心を開いた。\n\n「見せてあげる」彼女は言った。「でも誰にも言わないで」「約束します」ピンクの光が彼女の周囲に広がった。うさぎの形をした武魂が現れた。一見すると可愛らしい。しかし霊力の密度が異常だ。\n\n前世の記憶が答えを教えてくれた。これは「聖魂」の一種だ。見た目に反して、武魂界の中でも最上位の部類に属する。\n\n「綺麗だ」タン・サンは言った。彼女は少し驚いた顔をした。「怖くないの？ 皆、不思議がるか怖がるかのどちらかなのに」「なぜ怖がるんですか。美しい武魂ですよ」シャオ・ウーはしばらく彼を見つめた。「変わった人ね」「よく言われます」タン・サンは笑った。前世でも同じことを言われた気がする。`,
+
+  "10-5": `学院間の交流試合の案内が届いたのは、入学から三ヶ月後のことだった。\n\n青霊学院対隣町の白霊学院。魂師の卵たちによる親善試合。参加は任意だが、出場することで奨学金が得られる可能性がある。\n\nタン・サンとシャオ・ウーは迷わず参加を決めた。\n\n問題はシャオ・ウーが武魂を公開したくないことだった。「白うさぎの武魂を見せたら笑われる」「笑う者は後で泣きます」「それは怖い言い方ね」「事実を言ったまでです」\n\nタン・サンは自分の出場種目を考えた。白虎武魂は使えば目立ちすぎる。まずは青銀草の魂技で戦うことにした。青銀草の魂技は攻撃力こそ低いが、その複雑な蔓の操作は、上手く使えば相手を拘束できる。\n\n試合当日。タン・サンの対戦相手は白霊学院の代表選手だった。霊力は二段上。しかしタン・サンが最初に放った蔓の動きを見て、試験官が思わず立ち上がった。十歳の子供が使う蔓の制御が、あまりにも精密だったからだ。`,
+
+  "11-4": `旅立ちの日は、イー・ユンが十二歳になった春に来た。\n\n牛角村には修行の場がない。これ以上ここにいても、基礎しか積み上げられない。隣の町に修行場があると行商人から聞いた。費用がかかるが、前世の記憶にある錬丹の知識を使えば資金は作れる。\n\n「行くの」リン・シンユーは言った。泣いていない。ただ真っ直ぐに彼を見ていた。「そのうち戻ります」「いつ」「分からない。でも戻る」「約束？」「約束」リン・シンユーは少し考えた。「じゃあ、私も強くなって待っている」「それは頼もしい」\n\nイー・ユンは村の入り口で振り返った。小さな村。平凡な生活。しかしこの二年間は確かに必要な時間だった。基礎を整え、この時代を理解し、次のステップへの準備を整えた。\n\n前世では何百年という時間をかけた修行を、今世では違うやり方でやり直す。急ぐ必要はない。ただし立ち止まる必要もない。彼は南へ向けて歩き始めた。`,
+
+  "11-5": `隣町の修行場は「玄武道場」という名前だった。\n\n入会費が必要だ。イー・ユンは町に着いた最初の日に薬草市場を探した。前世の知識で、この時期にこの地域で採れる薬草の価値を知っている。市場で一日かけて交渉し、持参した山野草を売って入会費を工面した。\n\n道場の師範は厳格な老人だった。新入りを試す時、必ず最初に基礎体術を見る。「立て。動いてみろ」イー・ユンは基礎の型を演じた。前世の動きをそのまま使うのではなく、十二歳の子供らしい「上手だが粗削り」な動きを意識して。\n\n師範は首を傾げた。「お前、どこで習った」「独学です」「嘘をつくな。この動きは基礎だが、理解して動いている」「本を見て練習しました」「どんな本だ」「村の古老から借りた、古い修行書です」師範はしばらく考えた。「まあいい。入会を認める。ただし基礎から全てやり直す。文句はないな」「はい」イー・ユンは内心で苦笑した。三十三天の人皇が、また一年生からやり直しだ。`,
+
+  "12-4": `ロロ・リンがムー・チェンに声をかけたのは、学院に入って二ヶ月後だった。\n\nロロ・リンは一年生の中では有名な存在だ。特別な血統を持つ美少女で、霊力も際立っている。なぜ彼女がムー・チェンに話しかけてきたのか、周囲は首を傾げた。\n\n「授業中、あなたを見ていた」彼女は言った。「先生の問題を解く時、計算の順序が普通じゃない」「変でしたか」「変というより、効率的。どこで覚えた？」ムー・チェンは少し考えた。「自分で考えました。北方霊院では教わらなかったので」「追放されたって聞いた。本当？」直接だ。「本当です」「理由は？」「派閥の対立に巻き込まれました」「あなた自身の問題じゃないんだ」彼女は確認するように言った。「はい」「ならいい」ロロ・リンはそれだけ言った。何を確認したかったのか、ムー・チェンには分からなかった。しかし彼女がその後、定期的に声をかけてくるようになったことは確かだった。`,
+
+  "12-5": `北嶺学院の試練場は、月に一度開放される。\n\n霊力を高める特別な場所だ。場内は外部の霊力が圧縮されており、通常の三倍の速度で修行できると言われている。ただし入場には費用がかかる。ムー・チェンには余裕がない。\n\n「一緒に入る？」ロロ・リンが言った。「費用は割り勘で」「なぜ」「一人で修行するより、見張り役がいた方が効率がいい。あなたは真剣だから適任」理由はシンプルだった。ムー・チェンは承諾した。\n\n試練場の中は、確かに特別だった。霊力の密度が違う。呼吸するだけで体内の霊力が刺激される。ムー・チェンは基礎修行に集中した。特別な技など使わない。ただ基本を、この環境で繰り返す。\n\n二時間後、退場した時、ロロ・リンは言った。「あなた、修行中に一度も休まなかった」「時間が惜しいので」「普通は途中で限界が来る。霊力が尽きる」「慣れています。北方霊院では資源が少なかったので、少ない霊力で最大の効果を出す方法を自然と覚えました」ロロ・リンは少し考えた。「それ、教えてくれる？」`,
+
+  "9-4": `薬老の最初の課題は、材料の採集だった。\n\n「町の南に薬草園がある」薬老は言った。「そこで玄霜草を三本、黒峰花を一本、それと松霊草を五本集めてこい」シャオ・ヤンは首を傾げた。「錬丹の材料ですか」「そうだ。お前が次に飲む丹薬を自分で作る。材料から始めるのが基本だ」\n\n薬草園は町はずれにある。入場料がかかる。シャオ・ヤンは残り少ない小遣いを使った。園内では薬師見習いたちが作業している。その中に混じって、目的の薬草を探す。\n\n玄霜草はすぐ見つかった。黒峰花は少し時間がかかった。問題は松霊草だ。今の時期は採取量が少なく、売り切れていた。「また来月」と係員に言われた。\n\n「松霊草がない」シャオ・ヤンは薬老に報告した。「ならば代替材料を探せ」「代替材料？」「同じ効果を持つ別の材料を探す方法を考えろ。それが薬師の基本だ」シャオ・ヤンは唸った。材料が揃わない時の対処法まで、最初から学ばされるのか。薬の道は、思っていたより深かった。`,
+
+  "9-5": `シャオ家の三大長老会議が開かれた。\n\nシャオ・ヤンの現状について話し合うためだ。三年前から霊力が伸びない。その原因は依然不明。このまま成果が出なければ、婚約も家の後継者としての立場も危うくなる。\n\nシャオ・ヤンは廊下から声を聞いた。意図せずに聞こえてしまった形だが、内容は参考になった。家族が心配しているのは分かる。同時に、誰も本質を見ていないことも分かった。\n\n「聞いていたか」薬老が言った。「はい」「どう思った」「家族は善意で心配している。ただし間違った方向に」「その通りだ。では正しい方向は何だ」シャオ・ヤンは考えた。「霊力の量ではなく、質を改善すること。あとは……」「時間だ」薬老が続けた。「良い修行には時間がかかる。焦る者は基礎を固める前に壁にぶつかる」\n\nその夜、シャオ・ヤンは父のところへ行った。「心配をかけてすみません」「お前が謝ることではない」父は言った。「ただ元気でいてくれ。それだけでいい」シャオ・ヤンは頷いた。元気でいる。それは約束できる。`,
+
+  "9-6": `初めて作った丹薬が完成した日、シャオ・ヤンは三時間それを眺めていた。\n\n普通の人が見れば、何の変哲もない小さな丸薬だ。薄い緑色で、僅かに霊力の気配がある。市場で買えば二十文もしない。\n\nしかしシャオ・ヤンにとって、これは四ヶ月の努力の結晶だった。失敗した炉の数は三十七回。材料を無駄にした回数は数えきれない。薬老に怒られた回数は百回を超えた。\n\n「飲め」薬老は言った。「自分で作ったものを信用できないのか」シャオ・ヤンは丸薬を口に含んだ。溶ける感覚。わずかな温もりが体内を流れた。\n\n「どうだ」「……少し、霊力の流れがよくなった気がします」「気がするではない。実際に改善されている。微量だが」薬老は珍しく具体的な評価を口にした。「これが起点だ。この感覚を忘れるな。薬師は自分の体で薬を理解しなければならない」シャオ・ヤンは頷いた。四ヶ月かけて、ようやく起点に立った。長い道のりだが、確かに始まった。`,
+
+  "9-7": `シャオ・シュエが彼に声をかけてきたのは、久しぶりのことだった。\n\n婚約者。しかし三年間、彼が力を失ってからは距離を置いている。周囲の目もある。強者と弱者の婚約という現実を、彼女も感じているのだろう。\n\n「修行はしているの」彼女は聞いた。「しています」「どんな修行を」シャオ・ヤンは少し考えた。「薬師の勉強と、内功を少し」シャオ・シュエは首を傾げた。「薬師？ 武人の修行ではなく？」「両方します。ただ今は薬の方が先決で」彼女は何か言いかけた。しかし止めた。「そう」それだけ言って立ち去った。\n\n「気まずそうだったな」薬老がコメントした。「少し」「女心は薬より難しい」意外な言葉だった。「薬老も昔、そういう経験が？」「四百年も生きていれば色々ある」「話してください」「いつかな」薬老は笑った。シャオ・ヤンは初めて、指輪の中の老人に親しみを感じた。`,
+
+  "1-10": `神聖家の陰謀は、予想より二ヶ月早く動き始めた。\n\nロン・チェンが察知したのは、城下の薬屋で偶然耳にした会話の断片だ。「南の採掘場に例の品が届く」「神聖ヤン様の指示通りに」それだけで十分だった。前世の記憶が、この言葉の意味を即座に教えてくれた。\n\n神聖家は魔獣の魂骨を不正に流通させようとしている。この時代の法では厳しく禁じられている行為だが、証拠を掴んだ者がいなかった。いや、正確には、証拠を掴んだ者が消されてきた。\n\n今回は違う。ロン・チェンには彼らの手口が全て分かっている。どこに証拠を隠し、誰を使って運搬し、いつ取引が行われるか。彼は動いた。ただし自分ではなく、別の手を使って。学院の監査役に対して、「偶然気づいた」ふりをして情報を流す。証人になるのは自分ではない。神聖家が最も信頼している下働きの男だ。前世の記憶では、この男は後に家族を守るために神聖家を裏切った。その時期を、少しだけ早める。`,
+
+  "1-6": `ロン・チェンが初めて自分の気脈に新たな星の輝きを感じたのは、神聖蘭花学院の古い鍛錬場で一人修行していた深夜のことだった。\n\n九星覇体の術は、常人では理解すら難しい古代奥義だ。前世においてロン・チェンはこの術を最高境地まで極めたが、それには数百年の歳月を要した。しかし今世の彼には、その全ての記憶がある。理論ではなく、血と骨に刻まれた体験として。\n\n「二つ目の星が目覚める」彼は静かに呟いた。丹田の奥深くで何かが共鳴し、灼熱の気が脊椎を駆け上がる感覚があった。普通の修行者なら激痛で意識を失うはずの過程を、彼は静かな笑みを浮かべながら受け入れた。\n\n夜明けが近い頃、鍛錬場の石畳にひびが入った。ロン・チェンが立ち上がると、彼の足元には細かな亀裂が放射状に広がっていた。二星境界への突破。本来なら数年かかる段階を、たった一晩で越えた。外には誰もいない。それでよかった。この力を見せるべき相手は、まだ時が来ていない。`,
+
+  "1-7": `薬師ギルドの競売が開催されるという知らせは、グローリー・シティ全体に広まった。今年の目玉は三級霊薬「天心丹」だという。修行者の丹田を広げ、霊力の上限を一時的に押し上げるこの丹薬は、神聖家のような大家でさえ喉から手が出るほど欲しがる代物だ。\n\nロン・チェンは競売の三日前から行動を開始していた。前世の記憶によれば、天心丹の主要成分である「玄霜草」は南東の薬草市場に今週入荷するはずだ。一般には知られていない情報だが、彼には分かる。\n\n彼が玄霜草を購入した時、市場の薬師たちは奇妙な顔をした。腕白な子供が何の役にも立たない雑草を買っていく。そう思ったことだろう。ロン・チェンは気にしなかった。\n\n三日後の競売会場。天心丹が登場した瞬間、会場は静まり返った。しかしロン・チェンはすでに同等の効果を持つ丹薬を自製し、服用済みだった。彼が注目していたのは別の物だった。競売に紛れ込んだ、誰も気づいていない古代の丹薬の処方書。前世でさえ入手できなかった幻の一品が、安値で出品されていた。`,
+
+  "1-8": `葉紫雲との模擬戦は、彼女の提案だった。\n\nロン・チェンが彼女の修行に口を出したのは三度目のことだったが、今回は彼女も黙って聞き流さなかった。「あなたが本当に私より優れているなら、証明しなさい」鋭い目がそう言っていた。\n\n鍛錬場に二人きり。葉紫雲は銀階層の修行者だ。ロン・チェンの現在の霊力などより遥かに格上。本来なら勝負にならない。\n\n模擬戦が始まった瞬間、葉紫雲は驚いた。ロン・チェンが動かなかったのだ。ただ立っている。彼女の攻撃が迫るたびに、最小限の動きで躱す。まるで彼女の次の一手が全て分かっているように。\n\n「貴方の左足の踏み込みが〇・二歩分浅い」三度目の攻撃を避けながら、ロン・チェンは穏やかに言った。「そこを修正すれば、突きの速度が三割上がる」葉紫雲は動きを止めた。指摘は正確だった。彼女が一人で悩み続けていた課題だ。「なぜ知っているの」「見ていれば分かる」彼は笑った。その目の奥に、六年間のクラスメートのものとは思えない深さがあった。`,
+
+  "1-9": `魔獣の森の入り口に、見慣れない足跡があった。\n\nグローリー・シティの外壁より南二十里の地点。ロン・チェンがここを訪れるのは二度目だ。前世では三十歳を過ぎてからようやく踏み込んだこの場所に、今は十三歳の体で立っている。\n\n足跡は大型の雪嵐魔獣のものだった。しかし方向がおかしい。普通なら山の奥へ向かうはずの魔獣が、シティの方へ歩いている。群れで。\n\nロン・チェンは地面に手をついた。土の震動から、数を読む。十二頭。全て成体。これは通常の行動域逸脱ではない。何かが森の奥で魔獣たちを追い立てている。\n\n彼は走った。シティへ向けてではなく、森の奥へと。守護者たちに伝える前に、原因を確認しなければならない。前世の記憶が警告していた。この時期、この場所で起きた「森の異変」の真の原因を、当時の大人たちは最後まで理解できなかった。しかしロン・チェンには分かる。それは魔獣の暴走ではなく、誰かの意図的な誘導だ。`,
+
+  "10-1": `タン・サンが闘羅大陸に生まれた時、武魂覚醒の儀式はすでに六歳から行われていた。\n\n武魂は魂師の根本。人はそれぞれ異なる武魂を持ち、その武魂によって歩む道が決まる。炎、氷、光、影……強力な武魂を持つ者は宗派から迎えられ、弱い武魂を持つ者は平凡な生を送る。\n\nタン・サンの武魂覚醒の儀式は、静かな村の小屋で行われた。村の魂師が霊力を流し込み、覚醒を促す。\n\n最初に現れたのは青い銀草。平凡で、戦闘向きではない一般的な武魂だ。村人たちは落胆した表情を見せた。しかしその次の瞬間、何かが違った。青い銀草の周囲から、もう一つの気配が溢れ出した。\n\n二つ目の武魂。双魂の持ち主は万人に一人も存在しない。村の魂師は手が震えた。「白虎……」二つ目の武魂は白い虎の形を取った。攻撃型の最上位武魂の一つ。一般的な武魂の青い銀草と、希少な白虎。この組み合わせを持つ者を、彼は聞いたことがなかった。`,
+
+  "10-2": `タン・サンが青霊学院を選んだのは、最も有名な学院ではなかったからだ。\n\n前世の記憶には、強すぎる嫉妬と競争が才能を歪める場所がいくつかあることが刻まれている。最初から最上位の学院に入ることは、必ずしも最善ではない。まず基礎を固め、仲間を見つけ、準備を整える。\n\n青霊学院は小さな学院だ。生徒は三十人ほど。先生は年老いた魂師が数名。しかしタン・サンの目的地は学院そのものではなく、そこにいるはずの人物だ。\n\n初日のクラスで、一人の少女が目に入った。紫の長い髪、冷静な瞳。彼女の周囲だけ空気が微かに揺れている。隠された武魂の気配。彼女はまだ意図的に隠しているが、タン・サンには分かる。強い武魂だ。\n\n「隣に座っていいですか」タン・サンは聞いた。少女は一瞬だけ彼を見た。「どうぞ」それだけ言って視線を前に戻した。タン・サンは座りながら考えた。シャオ・ウー。この名前を覚えている。彼女がこの先の旅においていかに重要な存在になるか、彼は知っている。しかし今はただの初対面だ。焦ることはない。`,
+
+  "10-3": `最初の魂環を獲得するための魂獣狩りは、通常なら師匠と一緒に行う。\n\nしかしタン・サンには師匠がいない。青霊学院の先生たちは彼の武魂を見て、それぞれの意見を述べた後、誰も申し出てこなかった。双魂の持ち主を導ける者が、この小さな学院にはいなかったのだ。\n\nタン・サンは一人で山に入ることを決めた。前世の記憶がある。この山のどこに、どんな魂獣がいるかを知っている。最初の魂環に相応しい魂獣も、すでに選んでいた。\n\n山に入って六時間。目的の場所に着いた。小川のほとりに、三十年物の兎魂獣がいた。戦闘力は高くないが、俊敏性を強化する魂技を与える良質な魂環だ。\n\n戦いは短かった。タン・サンは白虎武魂を解放し、正面から仕掛けた。三往復の攻防。魂獣は倒れた。魂環が輝き、タン・サンの右手に宿った。一つ目の黄色の魂環。これが全ての始まりだ。彼は山を下りながら、次の目標を頭の中で整理していた。`,
+
+  "11-1": `イー・ユンが生まれ変わったのは、真武世界の最も辺境の村だった。\n\n前世では三十三天の人皇として、修行界の頂点に立った。あらゆる強者と戦い、あらゆる秘術を習得し、最終的には……記憶がそこで途切れる。死ではなく、何かが起きた。そして今、彼は七歳の少年の体にいる。\n\n村の名前は牛角。百人ほどが暮らす小さな集落。修行者は一人もいない。霊力の流れも薄く、外の世界とはほとんど隔絶されている。\n\nイー・ユンはこの状況を受け入れることにした。慌てても意味はない。修行の再開は体が成長してからで十分だ。それまでの間に、この時代の情報を集める。前世と今世では、どれだけ時代が離れているのか、まだ分かっていない。\n\n「ユン、何を考えているの」隣に住む幼馴染の少女、リン・シンユーが声をかけた。「世界のことを」「難しいことばかり考えている」「そうかもしれない」イー・ユンは笑った。七歳らしい笑い方を意識しながら。前世の記憶が全てある状態で、子供のように振る舞うのはなかなか難しい技術だと気づき始めていた。`,
+
+  "11-2": `村の古老が持っていた修行の書を、イー・ユンは借りた。\n\n正確には「発見した」という形にした。納屋の片隅に無造作に置いてあった。古老も存在を忘れていたらしい。「何が書いてあるか分かるか」と古老は笑いながら聞いた。「少し読んでみました」「難しい文字ばかりだろう」イー・ユンは少し考えた。前世で習得した数十の言語の一つと一致する。「なんとなくは」「そうか。賢い子だ」\n\n書の内容は基礎の呼吸法だった。修行の入門以前の段階。前世のイー・ユンには不要だが、今の体には重要だ。\n\n毎朝、日の出前に起きて書の通りに呼吸する。一ヶ月が経った。変化は小さいが確かにある。体が少し軽くなった気がする。霊力の流れが、以前より感じ取りやすくなった。\n\n前世の記憶を使えば、もっと速く進める。しかし今は慎重に行く。この時代に何が起きているか、何が変わっているか、まだ分からないことが多すぎる。情報を集めながら、少しずつ。`,
+
+  "11-3": `牛角村に行商人が来た。年に二度しか来ない珍しい訪問者だ。\n\nイー・ユンは行商人の荷物をしげしげと見た。外の世界の品々。修行用の低質な霊力石、簡単な丹薬、地図、書物。特に書物に目が行った。「それはいくらですか」「坊や、買えるか？」行商人は笑った。「村の子供に買えるような値段じゃないよ」「見るだけなら？」行商人は少し考えた。愛嬌のある子供だ。「一分だけな」\n\nイー・ユンは最も薄い書物を手に取った。「修行界地理概要」という題だ。一分で読み終えた。情報が整理される。現在地が分かった。そして何より重要なこと——この時代は、前世より少なくとも三千年は前の時代だということが分かった。\n\n「ありがとうございます」彼は書物を返した。行商人は首を傾げた。あの短時間で何を読んだのか。しかし問い直す前に、少年は走って行ってしまった。`,
+
+  "12-1": `ムー・チェンが北方霊院を追放された日、空には雪が降っていた。\n\n理由は些細なことだった。いや、正確には些細ではなかった。派閥間の対立に巻き込まれ、ムー・チェンは「不正行為」の名目を着せられた。証拠はない。しかし有力な長老が言い張れば、若い弟子の言葉など届かない。\n\n院外に放り出されたムー・チェンは、三日間途方に暮れた。手元にあるのは僅かな路銀と、ぼろぼろの修行着だけ。\n\n四日目の夕方、彼は決めた。諦めることを諦める。\n\n霊の道は一つではない。北方霊院が全てではない。もしあそこで修行し続けていたら、いつかは力をつけたかもしれない。しかしあの場所での成長には限界があった。追放は、むしろ機会かもしれない。\n\n彼は南へ歩き始めた。次の目的地は「北嶺学院」。入試は難しいが、実力主義と言われている。もし実力を示せれば、出身など関係ない。ムー・チェンはそう信じることにした。`,
+
+  "12-2": `北嶺学院の入試は、霊力比べではなかった。\n\n受験者たちが集められた広場で、主任試験官は言った。「今日の試験は三つ。霊力測定、学科試験、そして状況判断」最後の「状況判断」という言葉が引っかかった。\n\n霊力測定は特に問題なかった。ムー・チェンは霊力九段の下段。優秀とは言えないが、合格ラインは超えている。学科試験は霊術の基礎理論が中心。北方霊院で叩き込まれた知識が役に立った。\n\n問題は状況判断試験だった。受験者を五人ずつのグループに分け、「霊の迷路」に送り込む。出口を見つけることが目標。ただし迷路内には他のグループもいる。\n\nグループに入った瞬間、ムー・チェンは全員の顔を見た。一人は北方霊院の出身者だった。彼の名前はヤン・グァン。ムー・チェンを追放する口実を作った派閥の弟子だ。\n\n「偶然だな」ヤン・グァンは笑った。ムー・チェンは答えなかった。迷路の出口を考えることの方が重要だ。過去の怒りは、今は邪魔になる。`,
+
+  "12-3": `北嶺学院の入学後、最初の一ヶ月は「観察期間」と呼ばれていた。\n\n新入生を品定めする期間だ。上級生が新入生の実力を見て、勧誘したり、逆に圧力をかけたりする。ムー・チェンには覚悟があった。北方霊院で似たようなことを経験しているから。\n\n違ったのは、ここには「実力主義」という明確なルールが機能していた点だ。強い者が弱い者を傷つけることは禁じられていないが、弱い者が実力で強者を倒した場合、その強者を侮辱してはならない。奇妙なルールだが、一種の公平さがある。\n\nムー・チェンの最初の試練は入学二週間後に来た。上級生の一人が「試合」を申し込んできた。三年生の劉雷、霊力十三段。格差は大きい。しかし断れば懦弱とみなされる。\n\n試合は予想通り厳しいものになった。ムー・チェンは三分間で三回倒された。しかし三回とも自力で立ち上がった。最終的に霊力を使い果たして動けなくなった時、劉雷は言った。「根性だけはある」それはこの学院では、最低限の評価だった。`,
+
+  "2-4": `蘇宇が「意志力」という概念を体系的に研究し始めたのは、十四歳の夏だった。\n\n万族世界において、人族は長らく「最も平凡な種族」とされてきた。天賦の血統もなく、特殊な体質もなく、古代から受け継いだ種族技能もない。しかし蘇宇は、古文書を読み漁るうちに一つの事実に気づいた。かつて人族は、この世界の頂点に立っていた。\n\n図書室の一番奥、埃をかぶった棚の最下段。「上古人族秘録」という文書。誰も手に取った形跡がない。蘇宇は一晩かけてそれを読んだ。\n\n人族の真の力は血統にも体質にも宿らない。それは「絶対意志」という概念の中にある。どんな精神攻撃も退け、どんな逆境でも信念を折らない。それは修行によって培われるものではなく、極限の状況で初めて目覚めるものだと記されていた。\n\n試験場での出来事から一週間後。蘇宇は夜の訓練場で一人、石の壁に向かって立っていた。意志力を意図的に高める方法を、彼は独自に編み出しつつあった。誰も教えてくれないなら、自分で見つけるしかない。`,
+
+  "2-5": `万族第九高校に転校生が来た。竜族の血を引く少女だった。\n\n名前は劉炎。その右腕には鱗のような模様が走っており、立つだけで周囲の気温が数度上がった。種族技能「焰龍掌」の使い手として、すでに修行界では名が知れている。\n\n彼女のクラスは蘇宇と同じだった。\n\n初日の実技試験。劉炎は軽く手を振るだけで訓練用の石板を砕いた。クラス中が沸いた。その後、試験官が蘇宇を指名した時、教室は少し静まった。あの「意志力試験で記録を出した人間」として、蘇宇の名前は広まっていたからだ。\n\n蘇宇は石板の前に立った。攻撃技能はない。霊力も平均以下だ。しかし彼が石板に触れた瞬間、不思議なことが起きた。石板にひびが入った。物理的な力ではない。意志の圧力が、物質に干渉した。試験官は記録票に何かを書いた。劉炎だけが、蘇宇の手が微かに震えていたことに気づいていた。全力を出し切っていた、ということに。`,
+
+  "2-6": `人族研究会は、蘇宇が一人で始めた。\n\n最初は誰も来なかった。当然だ。人族の歴史を研究する意義など、この時代の誰にも見えていない。ポスターを貼っても、翌日には剥がされているか落書きされていた。\n\n三週間後、一人が来た。人族の女子生徒で、名前は陳夏。成績は中の下、種族技能なし、特別な体質なし。完全なる「普通」。しかし彼女には際立った観察眼があった。「あなたが意志力試験で500を出したのを見ていた」と彼女は言った。「あれはどうやったの」\n\n蘇宇は説明した。押し付けるのではなく、一緒に考えるように。陳夏は黙って聞き、質問した。鋭い質問だった。\n\n翌週、また一人増えた。その翌週、さらに二人。全員が人族で、全員が「普通」だった。蘇宇は気づいた。普通の人間が集まると、普通でない何かが生まれることがある。研究会は少しずつ、確かなものになっていった。`,
+
+  "3-3": `リー・チーウェイが最初に手を付けたのは、この都市の地下に眠る霊脈だった。\n\n十億年の記憶は、この大陸のあらゆる霊脈の位置を正確に記録している。表面には見えないが、地下三十丈のところに古代の霊気の流れがある。この時代の修行者には感知できないはずだ。しかし彼には分かる。\n\n彼は廃屋を借りた。家賃は安く、住人は誰もいない。地下室に降り、床の特定の場所に両手をついた。霊脈への接続。現在の器はあまりにも脆弱だが、それは問題ではない。水は器を選ばない。ただ流れる。\n\n一週間後、廃屋の近所の住人が気づいた。その建物の周囲だけ、植物の育ちが異常に良い。土に活気が戻っている。老人たちは「この土地に霊気が戻った」と喜んだ。誰もその廃屋に住む少年が原因だとは思わなかった。\n\nリー・チーウェイは毎朝、そこで一時間修行した。十億年を費やして積み上げた境地の欠片を、少しずつ取り戻しながら。焦ることはない。彼には時間がある。無限とは言わないが、十分すぎるほどの時間が。`,
+
+  "3-4": `城内で名を馳せた若き剣士が、リー・チーウェイに挑んできた。\n\n理由は単純だった。リー・チーウェイが北区の演武場で古い型の基礎練習をしているのを見た剣士が、「あの凡人に負けるわけがない」と仲間に言い切ったからだ。名誉のために証明が必要になった。\n\n挑戦を受けた時、リー・チーウェイは手に持っていた饅頭を食べ終えた。「いいだろう」\n\n剣士が最初の一撃を放った瞬間、何かがおかしいと気づいた。避けられた。ただ避けられたのではない。まるで最初からそこには何もなかったかのように、リー・チーウェイは動いていた。\n\n三十秒後、剣士は地面に座っていた。痛みはない。傷もない。しかし剣は手元になく、五歩離れた場所に刺さっていた。いつ、どうやって取られたか、全く分からなかった。\n\n「基礎が大切だ」リー・チーウェイは穏やかに言った。「一万年磨いた基礎は、十年磨いた奥義に勝る」剣士には意味が分からなかった。しかし不思議と、反論する気にはなれなかった。`,
+
+  "3-5": `古老が彼を呼び止めたのは、市場の帰り道だった。\n\n見た目は七十代ほどの老人。しかしリー・チーウェイは即座に察した。この老人の霊力は相当なものだ。この時代でも、相当な使い手に属する。\n\n「少し話さないか」老人は言った。断る理由はない。\n\n茶館の隅の席。老人は茶を一口飲んでから言った。「あなたは何者ですか」\n\nリー・チーウェイは考えた。嘘をついても意味はない。かといって真実を全て話す必要もない。「旅人です」「旅人が廃屋の霊脈を活性化させる」老人は静かに微笑んだ。「あの霊脈は五百年前に枯れたと言われていた」\n\n「枯れた霊脈も、適切な刺激を与えれば目覚める」リー・チーウェイは答えた。「木が古くなっても、根が死んでいなければ芽吹くように」老人は長い間、彼を見つめた。「この都市に何をしに来た」「見物です。この時代の景色を、しっかりと目に焼き付けておきたい」老人には意味が分からなかった。なぜ「この時代」という言い方をするのか。しかし問い直す前に、少年は席を立っていた。`,
+
+  "4-3": `ミラ・アシュヴェイルとの契約は、三日間の交渉を経て成立した。\n\nアルヴェスが提示した条件は三つ。一つ、依頼内容の全詳細を事前開示すること。二つ、報酬は金銭ではなく希少な魔法素材で支払うこと。三つ、いかなる状況下でも彼の真名を他者に明かさないこと。\n\nミラは二つ目の条件で粘った。「魔法素材の相場は変動します。金銭の方が公平では」「私に金銭は必要ない」アルヴェスは答えた。「しかし竜骨粉と月花石英は必要だ。あなたの組織ならば入手できるはず」ミラは手帳で何かを確認した。「月花石英は高い」「フィリア大陸での私の仕事と比べれば安い」\n\n最終的にミラが折れた。\n\n最初の依頼は情報収集だった。グレイ・マント協会が追っている失踪した研究者の足取りを辿ること。アルヴェスには不死者のネットワークがある。死者は多くのことを知っており、適切な対価があれば話してくれる。\n\n「四日以内に情報を揃える」アルヴェスは言った。「その間、あなたはここで待機しなさい」「骨の宮殿で？」「居心地は保証しない。ただし安全は保証する」ミラは周囲の骸骨を見回した。「精一杯信じてみます」`,
+
+  "4-4": `死者からの情報収集は、アルヴェスにとって最も得意とする技術の一つだった。\n\n骨の宮殿の最下層、儀式の間。彼は六体の霊を召喚した。全て、過去五年以内にこの大陸で死んだ者たち。その中に、行方不明の研究者と接触があった人物が二人いた。\n\n霊との対話は繊細な作業だ。死者は真実を語るが、全てを語るわけではない。適切な質問を、適切な順序で行わなければならない。アルヴェスは四時間をかけて情報を整理した。\n\n研究者は生きている。しかし自発的に失踪したのではない。彼が発見した古代の遺物を巡って、三つの勢力が争っていた。研究者は今、その中の一つに「保護」という名目で囚われている。\n\n翌朝、アルヴェスはミラに情報を伝えた。「場所の特定は？」「南東の廃城。ただし」彼は付け加えた。「その廃城は表向き無人だが、内部に高位の術者がいる。あなたの協会だけでは対処が難しい」「どれくらい難しい？」「私が同行すれば、問題ない」ミラは少し考えた。「追加料金は？」「龍牙一本」高い、と彼女は思った。しかし断らなかった。`,
+
+  "4-5": `廃城への潜入は夜明け前に行われた。\n\nアルヴェスは死のオーラを完全に抑制した状態で移動できる。生者の探知術にも不死者の感知術にも引っかからない。四百年の経験が生んだ技術だ。ミラも自分なりに気配を消していたが、アルヴェスの目から見れば「まあ合格」という程度だった。\n\n内部は想定より複雑だった。魔法的な結界が三重に張られており、それぞれ異なる術式を使っている。アルヴェスは一つ目の結界を解析した。三十秒。二つ目は五十秒。三つ目は少し手間取った。一分半。\n\n「速い」ミラは言った。「当然だ」アルヴェスは答えた。「私はこれらの術式が作られた時代を生きていた」\n\n研究者は地下三階の部屋にいた。思ったより元気そうだ。拘束されているが、傷はない。彼を「保護」している勢力は、知識を求めているのであって、研究者の命を奪うつもりはなかった。「帰る気はあるか」アルヴェスは部屋の入り口から問いかけた。研究者は暗闇の中でリッチを見上げた。「選択肢があるなら」「ある」「では是非」撤退は十二分で完了した。`,
+
+  "5-3": `霊力の格付け試験は半年に一度行われる。\n\nニエ・リーが試験会場に現れた時、同級生たちは内心で笑った。無階位のニエ・リーが何を期待して来ているのか。試験官でさえ、結果は分かりきっていると思っていた。\n\n試験は霊力測定石に手を触れ、霊力の強度と属性を計測するものだ。最初の数人が終わり、結果はいずれも予想通り。神聖ヤンが銀階位を確認し、満足げに笑った。\n\nニエ・リーの番が来た。彼は測定石に手を置いた。\n\n最初の五秒は何も起きなかった。測定石は沈黙していた。ニエ・リーは目を閉じて、前世で習得した霊力制御法を使い、最小限の霊力だけを測定石に流し込んだ。\n\n石が光った。弱い光だ。一階位相当。そこで彼は止めた。試験官が記録した。「ニエ・リー、一階位確認」その瞬間、会場の空気が変わった。昨日まで無階位だった者が、一夜で一階位になった。小さな驚きだが、確かな驚きだった。神聖ヤンの笑みが微かに消えた。ニエ・リーは何も言わずに会場を出た。`,
+
+  "5-4": `ニエ・リーが丁寧に育てている秘密がある。葉紫雲には気づかれていない、一つの計画だ。\n\nグローリー・シティの東区に小さな錬丹炉がある。廃業した薬師が置いていったもので、今は誰も使っていない。ニエ・リーはそれを月に二百文で借りた。\n\n錬丹術。前世では彼は一流の錬丹師だった。今の師範レベルの錬丹術など、目をつむっても作れる。しかし今世では「独学で覚えた」という設定を維持しなければならない。\n\n最初に作ったのは「霊気凝縮丹」。一般的な一級丹薬で、市場では三十文で売られている。彼が作ったものは見た目は同じだが、品質が段違いだった。しかしそれを売る時、彼は五十文ではなく二十五文で売った。\n\n「なぜ相場より安く？」薬屋の主人が不思議そうに聞いた。「まだ修行中なので」ニエ・リーは笑った。「品質に自信がないから」薬屋の主人は丹薬を一つ試した。目を丸くした。これは間違いなく一級品、いや、それ以上だ。しかし少年が「自信がない」と言っているから……彼は黙って買い続けることにした。`,
+
+  "5-5": `魔獣の咆哮がグローリー・シティの南壁に響いた夜、ニエ・リーはすでに外に出ていた。\n\nこの日を彼は知っていた。前世の記憶に刻まれた日付。黒雷炎虎、成体。グローリー・シティへの初めての大型魔獣侵入事件。この事件で東区の三つの家族が避難を余儀なくされ、市壁の修繕に一年かかった。そして何より、この夜の混乱に乗じて神聖家が東区の土地を安値で買い占めた。\n\nニエ・リーには別の計画があった。\n\n黒雷炎虎は東門から入ろうとする。その前に、指定の場所に誘導できれば……彼は前日から仕込んでおいた匂いの痕跡を確認した。人族の血の匂いを模倣した薬剤。魔獣の嗅覚は正確だ。南東の廃倉庫に誘導できる。\n\n計画は八割方うまくいった。黒雷炎虎は倉庫に向かった。しかし残り二割——ニエ・リーが計算に入れていなかった変数として、葉紫雲が「魔獣を観察する」という名目で夜の外出をしていた。`,
+
+  "6-3": `リン・ミンが真髄を理解し始めたのは、立方体の欠片を手に入れてから三週間後のことだった。\n\n鍛錬場で基礎練習を繰り返す中、彼は気づいた。同じ動作を繰り返すたびに、丹田の奥から微かなフィードバックがある。まるで自分の体が「ここは正しい」「ここは違う」と教えてくれるように。\n\n普通の修行者は感覚に頼る。優れた師匠に教わるか、自分の試行錯誤で気づくかのどちらかだ。しかしリン・ミンの場合、立方体の欠片が体内で何かを分析し、最適解を示してくれていた。\n\n「掌打を練習している」銀髪の少女、荀儿がまた声をかけてきた。「昨日より角度が変わった」「気づいた？」「あなたは毎回少しずつ違う。意図的に変えているの」「変化の中で正解を探している」リン・ミンは答えた。「師匠がいないから、自分で実験するしかない」荀儿は少し考えた。「私で良ければ、打ってみて」「師範代に対して？」「稽古相手として」それは彼女にとって珍しい申し出だった。リン・ミンは知らないが、荀儿がこうして声をかけた修行者は、彼が初めてだった。`,
+
+  "6-4": `錬体の道と霊力の道。武の世界の根本にある二つの流れ。\n\nリン・ミンは図書室で古い文献を読んでいた。ほとんどの修行者は霊力の鍛錬を重視する。霊力が強ければ強いほど、使える技が増え、戦闘力が上がる。これは常識だ。\n\nしかし立方体の欠片は、常に体の方へ意識を向けさせる。筋肉の使い方、骨格の角度、呼吸のタイミング。霊力よりも、物理的な体の精度を求めているように感じる。\n\n「身体武者の系譜」という古い文献の中に、一節があった。「霊力は天から借りた力、身体は自らが積み上げた力。天が気まぐれを起こしても、己の肉体は裏切らない」\n\nリン・ミンはその一節を書き写した。何年も前に書かれた言葉が、今の自分の感覚と完全に一致していた。立方体の欠片は自分に何を教えようとしているのか。それはまだ分からない。しかし方向性は見えてきた気がした。`,
+
+  "6-5": `初めての対外試合は、隣の宗派との友好演武大会だった。\n\nリン・ミンが選ばれたのは半ば偶然だった。本来は別の弟子が出るはずだったが、直前に怪我をした。補欠として名前があったのがリン・ミンだ。\n\n相手は雲霞派の弟子、年齢は同じく十五歳。霊力は銀階位下段。対するリン・ミンは銅階位。格差は明らかだ。\n\n試合が始まった。相手は迷わず霊力技能を使った。広範囲の衝撃波。リン・ミンは正面から受けず、側面に回った。最小限の動きで最大の位置取り。立方体から学んだ原則だ。\n\n三分後。リン・ミンは相手の腕を掴んでいた。投げた。霊力を使わず、純粋な体術で。相手は倒れ、立ち上がれなかった。\n\n観客は静まり返った。観衆の一人、雲霞派の長老が立ち上がった。「あの子の師匠は誰だ」「師匠はいません」宗派の長が答えた。「独学です」長老は首を傾げた。あの動きは独学で身につくものではない。しかし事実がそう言っている以上、信じるしかない。`,
+
+  "7-3": `天毒珠が目覚めたのは、雲澈が修行を再開してから十日後だった。\n\n体内で静かに脈打つ感覚。初めての人は本能的に恐怖を感じる。しかし雲澈には前世の記憶がある。この感覚を、彼は知っている。\n\n天毒珠は単なる毒の容器ではない。それは浄化と変容の器だ。あらゆる毒を吸収し、変換し、最終的には力へと昇華させる。前世の雲澈は、この理解に至るまでに十年かかった。今世では、最初から知っている。\n\n彼は実験を始めた。庭の片隅に生えている毒草を一枚摘んだ。量は微量。指先で触れるだけ。天毒珠がわずかに温もりを持った。吸収している。\n\n前世で彼が行ったのと同じプロセスを、より安全に、より効率的に。毒を力に変える修行は、始まりの段階では危険を伴う。しかし段階を知っていれば、リスクを最小化できる。夜な夜な庭に出て、少しずつ修行を積む少年を、誰も気にしなかった。ただの変わり者の子供だと思われていた。`,
+
+  "7-4": `青雲宗への入門試験は三段階ある。\n\n第一段階は霊力測定。第二段階は適性判定。第三段階は実技試験。雲澈が悩んだのは、どの段階でどれだけの実力を「見せるか」だった。\n\n見せすぎてはいけない。前世の経験から、あまりに早い時期に突出した才能を示すと、望まない注目を集める。特にこの宗派には、若い才能を潰すことに喜びを見出す者が複数いた。記憶にある顔が、警告として頭に浮かぶ。\n\nかといって見せなさすぎると入門できない。\n\n雲澈は計算した。入門できる最低ラインのわずか上。「期待されるが、脅威とは見られない」絶妙な位置。前世で身につけた演技力が、ここで活きる。\n\n第一段階の結果は「中の上」。試験官は満足した様子だった。第二段階で「風属性強め、火属性少し」という判定が出た。実際とは少し違うが、問題ない。第三段階では基本技能を丁寧に、しかし華やかさのない形で使った。\n\n合格。「普通の子が来た」という評価で。完璧だった。`,
+
+  "7-5": `師範の于無涯が彼を呼んだのは、入門から一ヶ月後だった。\n\n于無涯は青雲宗でも特別な立ち位置にある人物だ。前世の記憶では、この人が雲澈の修行において重要な役割を果たした。そして後に、その関係が悲劇的な形で終わった。\n\n「お前の修行の様子を見ていた」于無涯は言った。「普通だと思っていたが、普通ではない」\n\n雲澈は警戒した。見抜かれたか。「何がそう見えるのでしょうか」「基本の動きが完成されすぎている。習いたての者の動きではない」師範の目は鋭かった。\n\n「昔、独学で少し……」「嘘をつくな」于無涯は穏やかに言った。「私はお前を試していない。ただ知りたいだけだ。お前は何者だ」\n\n雲澈は少し考えた。全てを話すことはできない。しかし全てを隠すのも難しい相手だ。「前の生で、修行していました」于無涯はしばらく黙っていた。「転生者か」彼の言葉には驚きよりも、確認するような静けさがあった。「そのような者に会ったのは初めてだ。続きを聞かせてくれるか」`,
+
+  "8-3": `林雷は初めて魔法陣を描いた日のことを、おそらく生涯忘れないだろう。\n\n盤龍指輪の中に宿るドーリング・カウアートは、理論から教えることを好まなかった。「見て、感じて、やってみろ」が彼の基本方針だ。\n\n「魔法陣というのはな」ドーリングは言った。「世界への命令書だ。自然の法則に、一時的な例外を申請する。そのための言語が魔法陣の文字だ」林雷は羽ペンを手に取った。「どこから始めれば」「基礎の基礎から。風の偏向陣。これが描けなければ話にならない」\n\n最初の試みは完全な失敗だった。線が歪み、比率が狂い、魔力を流した瞬間に陣が崩壊した。爆発ではなく、静かに消えた。\n\n二十回目の試みで、微かな風が動いた。完全ではないが、機能した。ドーリングは何も言わなかったが、指輪がわずかに温もりを持った。それが彼の評価だと、林雷はなんとなく分かった。\n\n毎晩、他の生徒が寝た後、林雷は一人で魔法陣を練習した。宿舎の床、庭の地面、時には自分の掌の上にも。失敗を数えることをやめ、成功を数え始めた頃、上達の速度が変わった。`,
+
+  "8-4": `エルンスト学院の図書室には、一般生徒が立ち入れない区画がある。\n\n林雷がそこに忍び込んだのは好奇心からではなく、必要に迫られてだった。ドーリングが参照するよう指示した文献が、その区画にしかないという。\n\n「魔法学の禁書区画には、過去の失敗の記録がある」ドーリングは言った。「なぜ封じたかを理解する方が、何を封じたかより重要だ」\n\n入るための方法は三つ。力ずくで突破する、管理者を騙す、または正規の許可を得る。林雷は三つ目を選んだ。院長の秘書に直談判した。「研究課題のために必要です。一時間だけ。監視付きでかまいません」\n\n許可は意外なほど早く下りた。秘書は言った。「院長が興味を持ったようです。一時間後、報告書を提出すること」\n\n区画に入った林雷は、最初の五分で目的の文献を見つけた。残りの五十五分、彼は別の本を読んでいた。「龍血武者の失われた記録」という、薄くて古い冊子。血族の歴史が、断片的に記されていた。`,
+
+  "8-5": `父からの手紙が届いたのは、学期末試験の前日だった。\n\n内容は短い。「母の形見の指輪は大切にしているか」それだけだ。しかし林雷には分かる。これは父なりの確認だ。財政難が続く中、林雷が無事でいるかを問う、父の不器用な言葉。\n\n「指輪に反応しているな」ドーリングは言った。「感傷的なのか？」「少しだけ」「感傷は悪くない。ただし試験中は余計だ」\n\n試験は三科目。魔力理論、実技演習、そして戦術判断。林雷は理論では平均点を少し上回る程度の答案を出した。実技では風の偏向陣を完璧に描いた。それだけだ。派手なことは何もしない。\n\n戦術判断の試験で、問題が一つあった。「強力な敵が正面にいる。味方はあなた一人。取るべき行動を示せ」林雷は考えた。模範回答は「逃げる」か「待機して支援を待つ」だろう。しかし彼は別の答えを書いた。「敵の行動パターンを三回観察し、次の動きを予測した上で、最小のリスクで最大の情報を得る」試験官は長い間その答案を見つめた。`,
+
+  "9-1": `シャオ・ヤンが霊力を失ったのは、三年前の冬至の夜のことだった。\n\n五才の頃から神童と呼ばれ、九才で六段の境地に達した。宗派内でも指折りの才能と言われ、父は誇らしげに、婚約者のシャオ・シュエは冷静な目で、仲間たちは羨ましそうに彼を見ていた。\n\nそれが一夜で消えた。\n\n今は十五歳。三年間、修行をしても霊力は伸びない。体内に残っているはずの霊力が、まるで砂に水を注ぐように消えていく。医師も、薬師も、宗派の長老も、原因を突き止められなかった。\n\nシャオ・ヤンは指輪を見た。亡き母の形見として受け継いだ古い指輪。何の変哲もない黒い石が嵌まっている。三年間、この指輪が何かを語りかけてくるような気がしていた。しかし毎回、空振りだった。\n\n今日が違ったのは、彼が初めて本気で諦めかけた日だったからかもしれない。「もう限界だ」と心の中で呟いた瞬間、指輪が光った。`,
+
+  "9-2": `「ようやく話しかけてきたな」指輪の中から声がした。\n\n老人の声だ。しかし疲れた老人ではなく、長い眠りから目覚めた巨人のような声。シャオ・ヤンは部屋を見回した。誰もいない。声は確かに指輪から聞こえていた。\n\n「薬師です」老人は言った。「正確には、かつて薬師だった者。今は霊魂として、この指輪に宿っている。名前は薬老という」薬老。シャオ・ヤンはその名を聞いたことがない。「なぜ今まで黙っていた」「お前が本気で諦めるのを待っていた」「それはどういう意味ですか」「完全に空になった器でなければ、真の修行は始まらない。お前の才能への自信が、邪魔をしていた」\n\nシャオ・ヤンは座り込んだ。頭の中で多くのことが繋がっていく。霊力が消え続けた三年間。それは「失われた」のではなく、何かのために「準備された」のかもしれない。\n\n「俺の霊力はどこへ行った」「お前の体の中にある。ただし今の形では使えない。作り直す必要がある」「作り直す？」「そう。一から。しかし今度は、遥かに強固な基盤の上に」`,
+
+  "9-3": `修行を再開した日から、シャオ・ヤンは変わった。外見的には何も変わらない。むしろ以前より静かになった。しかし目の奥に、以前にはなかった何かが灯っていた。\n\n薬老の指導は厳しかった。毎朝、夜明け前に起きる。身体鍛錬一時間。基礎呼吸法三時間。内功修行二時間。昼食後に薬草の知識を学ぶ。夕方に再び実技。就寝前に今日の課題を復習する。\n\n「薬師の修行もするのですか」シャオ・ヤンは驚いた。「霊力の道と薬の道は別物では」「お前は霊力だけで強くなろうとしている。それが以前の限界だ」薬老は言った。「霊力、身体、知識、すべてが揃って初めて真の修行者になれる」\n\n一ヶ月後、シャオ・ヤンは初めて炉を使って丹薬を作った。失敗した。炉が爆発した。幸い小型の炉だったので怪我はなかった。翌日また試みた。また失敗した。三日目に、かろうじて形になった丹薬が一つできた。「合格とは言えないが、最低限だ」薬老の評価はそれだけだった。シャオ・ヤンはそれで十分だと思った。`,
+
+  "10-10": `学年末の総合評価で、タン・サンは十位内に入った。\n\n青霊学院の規模では、十位内は十分に上位だ。しかし彼が注目されたのは順位ではなく、評価の内訳だった。学科：平均的。実技：優秀。協調性：最高評価。特記事項：「判断力が際立って優秀。危機対応の指針になれる素質あり」\n\n担任から呼ばれた。「来年、別の学院への移籍を考えてみないか」「どこですか」「七怪学院。難しいが、お前の素質ならいける」七怪学院。前世の記憶がある。そこで出会う者たちを、彼は知っている。時期が来たということか。「考えてみます」「シャオ・ウーも同じことを勧めた」タン・サンは少し驚いた。「彼女も？」「あの子の武魂は、ここでは限界がある。一緒に進むなら、より高い場所に行くべきだ」タン・サンは頷いた。計画が、次の段階に進もうとしていた。`,
+
+  "10-8": `タン・サンが二つ目の魂環を得たのは、学院の課外実習中だった。\n\n課外実習は毎年行われる。実際の魂獣が生息する森に入り、班ごとに活動する。タン・サンはシャオ・ウーと同じ班だった。五人編成。他の三人はあまり話したことがない同級生たちだ。\n\n森の中で班が分断された。魔獣の群れが現れ、散り散りになった。タン・サンとシャオ・ウーは二人で行動した。三時間後、五十年物の蛇魂獣と遭遇した。シャオ・ウーの武魂では苦手な相手だ。タン・サンが前に出た。\n\n戦いは長かった。しかし技術と前世の経験が、霊力の差を補った。魂獣が倒れた瞬間、二つ目の魂環が現れた。紫色の環。五十年物。これは予想より良い品質だ。「すごい」シャオ・ウーが言った。「次はあなたの番だ」タン・サンは言った。「私の？」「次の魂環を取る機会を一緒に探そう」二人の旅は、そこから本格的に始まった。`,
+
+  "10-9": `シャオ・ウーが自分の武魂の能力を初めて全開にしたのは、危機の状況だった。\n\n帰路で、他学院の不良修行者グループに囲まれた。三対二。相手は明らかに喧嘩慣れしている。「その子の武魂を見せろ」と彼らは言った。シャオ・ウーの武魂の噂が広まっていたらしい。\n\nタン・サンが前に出た。「それは断る」交渉はすぐ決裂した。戦いが始まった瞬間、シャオ・ウーが動いた。前世の記憶にあるのと同じ動き。彼女の武魂の本当の力が出た時、相手は固まった。\n\n三人は逃げた。\n\n「ありがとう」タン・サンは言った。「何が」「守ってくれた」「あなたが先に動いてくれた」シャオ・ウーは少し考えた。「ねえ、あなたって不思議だ。なぜいつもそんなに落ち着いているの」「一度、似たような状況を経験したことがある気がするから」「気がする？」「そんな感じがする」それ以上の説明はしなかった。シャオ・ウーも聞き返さなかった。`,
+
+  "11-10": `玄武道場での修行の最後の日、師範は珍しいことを言った。\n\n「お前は道場を卒業した。正式な修行者として認定する」一年半が経っていた。道場での基礎修行は、イー・ユンが計画していたものより内容が充実していた。\n\n「次はどこへ行く」師範は聞いた。「もう少し広い場所へ」「どこを考えている」「北の修行都市か、東の研究宗派か、まだ決めていません」「東の研究宗派か。そこは理論重視だ。実戦が薄くなる可能性がある」「分かっています。ただし知識の部分を補いたいので」師範は頷いた。「一つだけ忠告する。お前の動き方は、道場のものではない。どこかで別の修行を受けている。それを隠す理由は聞かない。ただし行く先では、それを活かしなさい」「はい」「良い旅を」イー・ユンは礼をした。次のステップへ。前世より早い準備で、今世の旅は始まる。`,
+
+  "11-8": `道場での最初の本格的な試練は、半年後に来た。\n\n玄武道場の年に一度の試験。全師範が見ている中で、同学年の相手と試合する。イー・ユンは試験前夜に考えた。どのレベルで戦うか。\n\n前世の記憶では、この時期の標準的な修行者が持つ技量は分かっている。それと釣り合うように演じることが必要だ。\n\n試合が始まった。相手は道場内でも評判の良い少年だ。動きは正直で、基礎がしっかりしている。イー・ユンは相手を尊重して戦った。本気の七割。\n\n五分後、イー・ユンが勝った。判定ではなく、相手が参りを認めた形だ。師範の一人が言った。「良い試合だった。しかしお前、まだ余力があるだろう」「いいえ」「嘘だ。目が落ち着きすぎている」イー・ユンは少し考えた。この師範は鋭い。「少しだけ」と認めた。「なぜ隠した」「相手を傷つけたくなかったので」師範は首を傾げた。変わった子だ、と思った。`,
+
+  "11-9": `道場の外の世界を初めて垣間見たのは、偶然だった。\n\n町の広場で、旅の修行者が公開演武をしていた。珍しい技を見せながら、観客から銅貨を集めるやり方だ。\n\nイー・ユンは足を止めた。演武の内容そのものより、旅の修行者の動き方を観察した。各地を旅して力をつけてきた者の動き。洗練されてはいないが、実戦から生まれた確かなものがある。道場の修行とは違う種類の技術だ。\n\n演武が終わった後、イー・ユンは旅の修行者に声をかけた。「一つ聞いてもいいですか」「子供が何だ」「その動き、どこで覚えましたか」旅の修行者は少し考えた。「各地で戦いながら」「どこが一番勉強になりましたか」「東の国境地帯。そこには様々な修行者が集まる。戦い方も様々だ」イー・ユンは頷いた。「ありがとうございます」「お前、修行者か」「始めたばかりです」「割にしっかりした目をしているな」旅の修行者は笑って去っていった。`,
+
+  "12-10": `ムー・チェンが初めて「理法陣」の才能を見せたのは、事故のようなものだった。\n\n授業中、師範が複雑な霊力陣の問題を出した。「解けた者から提出」という課題だ。ムー・チェンは解いた。しかし他の生徒より速すぎた。三分。他の生徒は平均十五分かかる問題だ。\n\n「出し方が違う？」師範が解答用紙を見て首を傾げた。「この手順は教えていない」「自分で考えました」「どうやって」「最短経路を探す癖があるので」師範は解答を詳しく見た。確かに正しい。そして教科書の方法より効率が良い。「これはどこで習った」「習っていません。北方霊院では標準的な手順しか教えてもらえなかったので、自分で考えるしかなかった」師範は解答用紙を持って教室を出た。しばらくして戻ってきた。「副学長が話したいと言っている」ムー・チェンは頷いた。計画より早いが、隠し続けることにも限界がある。出るべき時は出る。`,
+
+  "12-8": `ロロ・リンから修行効率化の方法を教えてほしいと言われた後、二人は週に一度話し合うようになった。\n\n彼女は頭が良い。説明すれば理解が早い。しかし育ちが違うせいか、「少ない資源で最大の効果を出す」という発想が抜けていた。豊かな環境で育てば当然だ。\n\n「なぜそういう考え方ができるの」ロロ・リンは聞いた。「資源が少なかったから」「北方霊院での話？」「追放される前から、そういう環境でした」「裕福ではなかった？」「家は普通です。ただ宗派内での立場が低かった。良い修行環境へのアクセスが限られていた」ロロ・リンはしばらく考えた。「私は逆だった。全てが揃っていたから、選ぶことに慣れていなかった」「今は？」「あなたと話すようになってから、優先順位を考えるようになった」これは双方向の学習だった。ムー・チェンにとっても、ロロ・リンから学べることは多かった。`,
+
+  "12-9": `北嶺学院の中間評価が出た。\n\nムー・チェンの順位は中の上。目立たない位置だ。計算上はもう少し上に行けるが、あえて抑えた。まずは学院の仕組みを把握することが先だと判断した。\n\nロロ・リンは上位五位以内だった。「なぜあなたはこの順位なの」彼女は直接聞いた。「実力通りです」「違う。私は分かる。もっと上に行ける」ムー・チェンは少し考えた。「情報が少ない段階で目立つのはリスクがある」「リスク？」「学院の派閥、先輩との関係、長老の意向。北方霊院でそれを無視して失敗した経験がある」ロロ・リンは黙って考えた。「慎重なんだ」「そうです」「でもそれだと成長が遅くなるんじゃ」「見かけ上はそう見えるかもしれない。でも土台を固める時間だと思っている」ロロ・リンは頷いた。「分かった。教えてくれてありがとう。私の戦略も少し修正する」`,
+
+  "2-10": `学院の外に出たのは、許可を得てのことだった。\n\n万族世界の外縁部、人族がかつて支配していたという「白古原」を調査するための許可証を、蘇宇は一ヶ月かけて申請した。何度も却下された。根拠のない研究、意義不明、危険性が高い。しかし粘り続け、最終的に副学長が「面白い」と判断して許可が下りた。\n\n白古原は荒れ地だ。草も生えない白い土地が、地平線まで続く。かつて何かがあった場所だということは、遺跡の痕跡が示している。蘇宇は地面に触れた。\n\n感じた。微かだが確かな何かを。人族の痕跡ではない。それより古い何かが、この土地の記憶に残っている。陳夏は計測器で土壌を調べていた。他の研究会のメンバーは周囲を観察している。\n\n「この土地は死んでいない」蘇宇は言った。「眠っているだけだ」彼は立ち上がり、白古原の中心に向かって歩き始めた。何かがある。まだ分からない。しかし確かに、ここに来るべき理由があった。`,
+
+  "2-7": `試験の結果が掲示板に張り出された日、蘇宇は三十分待ってから見に行った。\n\n人混みが引いた頃、掲示板の前に立つ。上位十名のリストに自分の名前があった。七位。種族別では人族の中で唯一のランクインだ。他の九名は全て、特別な血統か種族技能を持つ者たちだった。\n\n「おめでとう」後ろから声がした。劉炎だった。「あなたが上位に入るとは思わなかった」「そうですか」「褒めているつもりなの」「ありがとうございます」劉炎は少し考えた。「放課後、一緒に修行しない？」蘇宇は驚いた。「なぜ」「あなたの意志力の鍛錬方法を見たい。竜族の体質に応用できないか試したくて」純粋な好奇心と研究心。蘇宇には分かった。「構いません。ただし私の方法は地味で時間がかかります」「構わない」「では明日の放課後に」二人の修行は、そこから始まった。`,
+
+  "2-8": `人族研究会の発表会は、学院の小会議室で行われた。\n\n来たのは十二人。全員が人族だ。蘇宇は準備してきた資料を広げた。「上古人族の覚醒条件について」というタイトルで、三ヶ月の研究成果をまとめたものだ。\n\n発表は一時間かかった。途中で質問が何度も入った。皆、真剣に聞いていた。自分たちの種族の可能性について話す声を、これほど真剣に受け取ってもらえたのは、蘇宇には初めての経験だった。\n\n「本当に人族はまた立てると思う？」一人が聞いた。蘇宇は少し考えた。「可能性があると思う。方法が分かれば」「方法って何」「今研究中です。でも方向は見えてきた。意志の力を体系的に鍛える方法」陳夏が手を上げた。「私も参加していい？」「もちろん」その後、六人がさらに手を上げた。研究会は、その日から本格的に動き始めた。`,
+
+  "2-9": `万族世界における「人族覚醒」の記録は、最後のものから千年が経っていた。\n\n蘇宇がその記録を見つけたのは、学院の最古の文書庫の中だった。整理もされていない古い書簡の束の中に、一枚の羊皮紙があった。「人族意志覚醒の証言」という見出し。\n\n内容は断片的だった。しかし核心部分は読み取れた。「完全な絶望の中でも意志が折れなかった時、人族の眠れる力が目覚める」\n\n完全な絶望。蘇宇は意志力試験のことを思い出した。五百という数値を叩き出した瞬間。あれは限界まで追い込まれた状況だった。意図せず、条件を満たしていたのかもしれない。\n\n「どうした」陳夏が隣で文書を覗き込んだ。「大事なことが分かったかもしれない」「何が」「人族の力が目覚める条件。ただし確認するには、もう一度極限状態に入る必要がある」「危険では」「段階的にやれば大丈夫なはず」陳夏は顔をしかめた。「蘇宇、あなたの『大丈夫』はいつも少し怖い」`,
+
+  "3-10": `季節が変わり、街に新しい商人が来た。\n\n外来の商人だ。遠い都市から来たらしく、品物も普通とは違う。霊力を封じた道具、珍しい素材、そして複数の修行書籍。リー・チーウェイはその書籍を一冊一冊確認した。\n\n三番目の本に手が止まった。「大道源流考」という題。この本は前世でも希少だった。後の時代には完全に失われる書物だ。なぜここにあるのか。\n\n「いくらですか」「高いですよ」商人は言った。「見ての通り古い本ですが、内容が特別でして……」値段を聞いた。手元の金では足りない。「三日待ってもらえますか」「他に買い手が来なければ」リー・チーウェイは頷いた。三日で資金を工面する方法は、いくつか思いついていた。\n\n老人に声をかけたのは翌日だ。「一つ仕事をさせてください。対価として金銭を」「何の仕事だ」「街の東の土地の霊脈を調べること。地主が困っているはずです」「なぜ知っている」「見れば分かります」老人は首を傾げた。「本当に不思議な子だ」`,
+
+  "3-6": `リー・チーウェイが街の子供たちと話すようになったのは、自然な流れだった。\n\n彼の言動が「奇妙だが危険ではない」と分かってきた頃、近所の子供たちが近寄ってきた。学校の帰り道に数人が声をかけ、いつの間にか集まるようになった。\n\nリー・チーウェイは話すことが嫌いではない。ただし中身のある話が好きだ。子供たちの素朴な質問に、彼は丁寧に答えた。「なぜ空は青いの」「なぜ川は流れるの」「強い修行者になるにはどうすればいい」\n\n最後の質問だけ、彼は少し考えた。「なりたい理由による」「守りたい人がいるから」「それは良い理由だ。では毎日、その人のことを考えながら修行しなさい。力は目的と結びついた時、最も育つ」子供たちは頷いた。十億年の知恵が、子供向けに圧縮された形で伝わっていた。`,
+
+  "3-7": `城の南に、廃寺があった。\n\n誰も近づかない。霊気が淀んでいる、幽霊が出る、昔何かが起きた場所だ、と様々な噂がある。リー・チーウェイは興味を持った。\n\n廃寺に入った瞬間、分かった。ここは昔、修行の場だった。しかも相当な高位の修行者が使っていた形跡がある。建物は朽ちているが、床の石畳に刻まれた文様は残っている。修行陣の痕跡だ。\n\n彼は三時間かけて寺を調べた。地下室があった。梯子は腐っていたが、降りた先に小さな石室がある。部屋の中央に祭壇。その上に、ほこりをかぶった小箱があった。\n\n箱を開けた。中には羊皮紙が一枚。文字が書かれている。古い言語だが、リー・チーウェイには読める。十億年の記憶には、あらゆる時代の言語が含まれている。\n\n「修行者よ、この場所を見つけた者へ。貴方が真の求道者であるならば、この法を授ける」彼は静かに読み続けた。廃寺は、予想外の宝庫だった。`,
+
+  "3-8": `法の継承は三日かかった。\n\n廃寺の石室で、リー・チーウェイは羊皮紙に記された法を読み込んだ。内容は「虚空体悟法」という修行術だ。この時代にはまだ知られていない、失われた系統の修行方法。\n\n内容を記憶するだけなら一時間もあれば十分だ。しかし理解には時間がかかる。表面的な技法だけでなく、その根底にある原理を完全に把握することが必要だ。リー・チーウェイは急がなかった。\n\n三日目の夜、彼は石室の中で目を開けた。理解は完成した。この法は彼が前世で習得した大いなる道の系統に属する修行術だ。完成度は低い。おそらく数百年前の修行者が不完全な形で記したのだろう。しかし方向性は正しい。\n\n彼は自分の修行に組み込むことにした。不完全な部分は補える。自分の記憶の中に、この法を完成させるための要素がある。廃寺を出る時、彼は石室の入り口を元の状態に戻した。次に来るべき人のために。`,
+
+  "3-9": `古老がまた現れた。今度は廃寺の前で待っていた。\n\nリー・チーウェイは驚かなかった。この老人が只者でないことは分かっている。廃寺に人が入ったことを察知できるということは、それなりの感知能力があるということだ。\n\n「三日間、中に何があった」老人は聞いた。「古い法書です」「それをどうした」「読みました」「それだけか」「理解しました」老人は長い沈黙の後、言った。「虚空体悟法は、二百年前に最後の継承者が死んで以来、失われたと思われていた」「記録は残っていました」「お前に読めたのか」「はい」また沈黙。老人の目に複雑な感情が浮かんだ。「それをどこで習得した」「前の縁です」「またその言葉か」老人は溜め息をついた。「お前との縁は、私にとって修行になりそうだ」リー・チーウェイは微笑んだ。「それは光栄です」`,
+
+  "4-10": `翌夜、施設を制圧した。\n\nアルヴェスとミラ、それにミラが呼んだグレイ・マント協会の調査員二名の計四名。アルヴェスが結界を外し、ミラたちが突入する。アルヴェス自身は入り口で待機し、逃走者を封じる役割だ。\n\n作戦は三十分で完了した。施設内の警備員は八名。全員が無力化され、拘束された。研究者たちも確保。三人の商人は解放された。\n\n「完璧でした」ミラは報告書を書きながら言った。「私の部下が動けたのはあなたの結界解析があったからです」「当然だ。それが仕事だ」「一つ聞いていいですか」「何だ」「なぜ引き受けてくれたのですか。リッチがこういう仕事を」アルヴェスは少し間を置いた。「リッチにも利益がある」「具体的には？」「情報だ。世界がどう動いているかを知ることが、私の最大の防衛手段だ。あなたたちの仕事に関わることで、私は多くを知れる」ミラは頷いた。「では、また依頼しても？」「条件次第だ」`,
+
+  "4-6": `研究者の救出から一週間後、ミラは新しい依頼を持ってきた。\n\n「失踪した商人の調査です」彼女は書類を広げた。「三人の商人が同じ街道で行方不明になっています。共通点は全員が同じ業者から荷物を受け取っていた点」アルヴェスは書類を見た。「単純な強盗ではないな」「ええ。荷物の中身が問題で、全て特定の薬草です。大量の、特定の薬草」「何のための薬草か分かっているか」「分かっていれば、こちらで解決できます」アルヴェスは骨の指を組んだ。「私のネットワークで死者に聞ける範囲を確認しよう。ただし今回は一つ条件がある」「何ですか」「現場に同行すること。情報収集だけでなく、実地調査が必要だ」ミラは少し考えた。「分かりました」これが彼らの二度目の共同作業の始まりだった。`,
+
+  "4-7": `街道の現場調査は夜に行われた。\n\nアルヴェスは死のオーラを完全に抑制した状態でミラと並んで歩いた。普通に見れば老齢の人間と若い研究者の二人連れだ。怪しまれる要素はない。\n\n「ここで最初の商人が消えた」ミラは地図を見ながら言った。「次のポイントは五百メートル先」アルヴェスは地面に手をついた。魔力の残滓を感知する。「何かあった。最近ではない。しかし定期的に魔法が使われている形跡だ」「定期的に？」「週に一度程度。正確に。これは習慣的な行為だ」ミラは手帳に記録した。「施設がある可能性が高い」「その通りだ。隠蔽結界を張って定期的に魔法を使う施設。目的は分からないが、規模は相当なものだろう」アルヴェスは立ち上がった。「明日の夜、範囲を広げて調べる。今日は情報収集だ」「帰りますか」「いや、もう一か所」彼は街道を外れ、森の中へ歩き始めた。「ついてこられるか」「もちろん」ミラは迷わずついていった。`,
+
+  "4-8": `森の中に、隠された扉があった。\n\n地面に埋め込まれた石板。見た目は岩の一部だが、特定の魔力パターンで反応する仕掛けだ。アルヴェスが感知したのは、この石板が先週使われた時の残滓だ。\n\n「開けられますか」ミラが聞いた。「解析に三十分は必要だ」「その間、私は周囲を警戒します」「頼む」アルヴェスは石板に集中した。術式の構造を分析する。なかなか複雑だ。作った者はかなりの腕前だ。ただし、四百年の経験から見れば、幾つか見慣れたパターンがある。\n\n二十二分後、扉が開いた。地下への階段。奥から微かな明かりが見える。ミラが隣に来た。「さすがです」「ただし中には人がいる。生きている人間が複数」「消えますか」「二人とも消える方が安全だ」「私には消える術がありません」「私の影に入れ」ミラは一瞬だけためらった。リッチの影に入るという状況の奇妙さを考えた。しかし実用性は明確だ。「お願いします」`,
+
+  "4-9": `地下施設は予想より大規模だった。\n\n五つの部屋。各部屋に設備。三人の研究者らしき人間と、数名の警備員。そして奥の部屋に、大型の錬成装置。アルヴェスはミラの肩を借りて素早く全体を把握した。\n\n「何を作っている」ミラが小声で聞いた。「薬草から特定の成分を抽出している。市場では禁止されている成分だ」「何に使う薬ですか」「修行者の感知能力を一時的に麻痺させる薬だ。検問を通り抜けるために使われる」ミラは顔を硬くした。これは思っていたより大きな話だ。「行方不明の商人は」「あそこ」奥の一室。三人の商人が拘禁されていた。「解放できますか」「できる。ただし今夜は偵察だ。施設の全容を把握してから行動する」「商人たちは今夜帰れない？」「安全のためだ。情報なしに動けば、別の危険が生じる」ミラは歯を食いしばった。「分かりました。しかし今夜中に計画を立てます」「賛成だ」`,
+
+  "5-10": `グローリー・シティの防衛評議会に、若い提案者が現れた。\n\nニエ・リーではない。彼が資料を提供し、別の人間が提案者として立った。ニエ・リーが直接動くには、まだ早い。しかし情報だけを持っていても意味がない。適切な経路で適切な人に届ける必要がある。\n\n提案の内容は「南方魔獣の移動パターンの変化について」だ。ニエ・リーが二ヶ月かけて収集したデータを整理したものだ。具体的な数値と記録日時がある。防衛隊の担当者は最初、懐疑的だった。しかし数値の精度と、実際の観察記録の一致度を見て、態度が変わった。\n\n翌日、防衛隊の一部が南方調査に派遣された。三日後に戻ってきた彼らは、記録と実態が一致していることを確認した。\n\n評議会での評価は静かに高まった。誰が情報源かは分からない。しかし正確だ。それだけで十分だった。ニエ・リーは日常生活を続けながら、少しずつ盤面を整えていた。`,
+
+  "5-6": `ニエ・リーが錬丹の腕を「公開」する機会を選んだのは慎重にだった。\n\n学院の薬剤師が病で倒れた。通常業務に支障が出ている。誰かが代わりに軽傷者向けの基礎回復薬を作る必要がある。院生ボランティアを募集した。\n\nニエ・リーが応募した。試験として基礎の丹薬を一つ作るよう言われた。彼は丁寧に、しかし意図的に「見習いとして上手い」というレベルに合わせて作った。速すぎず、遅すぎず。品質は良いが、奇跡的ではない。\n\n担当の先生は合格を出した。「薬師の才能があるね。修行者の道とは別に、薬師も検討してはどうか」「考えてみます」ニエ・リーは答えた。本音では両方が既に計画の中に入っている。修行者と薬師、そして将来的には錬丹師まで。一つの分野だけでは足りない。前世の自分がそれで何度も壁にぶつかったことを、よく知っているから。`,
+
+  "5-7": `聖獣の痕跡を発見したのは、魔獣の森の調査中だった。\n\n学院の公式調査隊に同行する許可を取った。本来は上級生が参加するものだが、ニエ・リーは「薬草収集の研究」という名目で特例を申請した。担当教師が認めたのは、最近の錬丹の実績があったからだろう。\n\n森の奥。通常の調査範囲を少し超えたところ。ニエ・リーは地面に膝をついた。草が特定のパターンで踏まれている。この跡を、彼は知っていた。前世の記憶に刻まれた、聖き魔獣の移動痕だ。\n\nこの聖獣は前世では十年後に現れた。しかし今世では何かが変わったのか、予定より早く活動しているらしい。ニエ・リーは観察を続けた。聖獣との関係をどう作るか、慎重に考えなければならない。これは後の旅において重要な要素になる。焦らず、しかし見逃さず。`,
+
+  "5-8": `葉紫雲と二人で修行した夜、ニエ・リーは初めて自分の過去の一部を話した。\n\n「前世のことを覚えている」彼は言った。「どういう意味」「文字通りの意味だ。以前の人生の記憶が全部ある」葉紫雲は長い間黙っていた。驚きか、不信か、何を考えているか分からない。「信じない？」「……分からない。でも、だから最初からこんなに落ち着いているのね」「そう」「怖くないの？　もう一度死ぬことが」ニエ・リーは少し考えた。「前世では守れなかったものがある。それが怖い。もう一度同じ失敗をすることが」葉紫雲は彼を見た。「何を守れなかったの」「この街。そして……」彼は続けるのをやめた。「それ以上は言えない。でも今世では違う結末にするつもりだ」葉紫雲はしばらく空を見上げた。「私は……あなたのことを信じてもいいかもしれない」`,
+
+  "5-9": `幻境術の本を手に入れたのは偶然だった。\n\n古書店の奥の棚、埃をかぶった中に紛れていた。本のタイトルは「上古幻霊術概論」。前世のニエ・リーが三十代で習得した技術の原書だ。まさかこんなところで入手できるとは思っていなかった。\n\n値段を聞いた。古くて状態が悪いという理由で格安だった。書店主には何が書いてあるか分からなかったのだろう。ニエ・リーは表情を変えずに購入した。\n\n部屋に戻って読み始めた。内容は前世で知っているものと八割一致している。残りの二割が、前世では失われていた部分だ。完全版が残っていたのか。\n\n幻境術は攻撃技術ではなく、欺瞞と情報収集のための術だ。実戦でも有効だが、最大の効果は戦略レベルで発揮される。この術を十三歳で習得すれば、次の十年の計画に大きな余裕が生まれる。彼は丁寧に、しかし確実に習得を始めた。`,
+
+  "6-10": `霊草の正体は「天地種」というものだった。\n\n荀儿が三日かけて古い文献から見つけ出した。万年に一度だけ実り、服用すると修行者の資質そのものを変質させる、伝説上の植物だ。「存在するとは思っていなかった」荀儿は言った。「でも文献の特徴と完全に一致する」リン・ミンは鉢の発光する芽を見た。「これをどうすべきか」「服用するなら今ではない。完全に成長してから。時期を誤ると効果が半減する」「どのくらいかかる」「文献では一年から三年。条件次第」リン・ミンは頷いた。そういうことか。立方体の欠片は長期的な計画を持っている。一年から三年、この草を育てながら基礎を固める。その後、天地種が完成した時に服用する。「秘密は守れるか」「当然」荀儿は言った。「ただし私は経過を観察したい」「一緒に育てよう」これが、二人の秘密の共同作業の始まりだった。`,
+
+  "6-6": `荀儿との修行は週に三回の習慣になった。\n\n正式な師弟関係ではない。ただ互いの修行を見ながら意見を言い合う。荀儿は攻撃系の霊術が得意で、リン・ミンの近接戦闘と組み合わせると練習の幅が広がった。\n\n「立方体の欠片は今も活動しているか」ある日、荀儿が聞いた。リン・ミンは驚いた。「なぜ知っている」「あなたの修行を見ていれば分かる。外部から指示されているような動きをする時がある」「気づかれていたか」「私の観察眼は売りなので」荀儿は淡々と言った。「秘密にしておく。ただし一つ聞かせて。その欠片は何のためにあなたを鍛えているの」リン・ミンは考えた。「まだ分からない。ただ方向性は見えてきた。普通の修行者ではなく、何か別のものになるために鍛えている気がする」「別のもの」「そう。まだ言葉にできないけれど」荀儿は頷いた。「分かったら教えて」「もちろん」`,
+
+  "6-7": `宗派の対外試合の結果は、リン・ミンを予想外の立場に置いた。\n\n勝利そのものより、勝ち方が問題だった。霊力で格下の相手が体術だけで上位修行者を倒したという事実は、宗派内でも大きな話題になった。良い意味でも悪い意味でも。\n\n「弟子にならないか」上級師範の一人が声をかけてきた。リン・ミンは慎重に答えた。「今は独自の方法で修行しています。師範についた場合、そのやり方を続けられますか」「それは……普通、弟子は師匠の方法に従うものだが」「では今は難しいです」「なぜ自分の方法にこだわる」リン・ミンは少し考えた。「師匠がいない間に体が覚えた道があります。それを途中で変えると、積み上げてきたものが崩れる気がして」師範は複雑な顔をした。「珍しい修行者だ」それ以上は言わなかった。勧誘は断られた形だが、師範の目には確かな評価の光があった。`,
+
+  "6-8": `立方体の欠片が初めて明確な「指示」を出したのは、リン・ミンが十六歳の時だった。\n\n通常は感覚的なフィードバックしか来ない。しかしその夜、丹田の奥から言葉に近いものが届いた。「北の渓谷へ」具体的な場所の指示。リン・ミンは翌朝、宗派の許可を取り北の渓谷へ向かった。\n\n渓谷は修行者に知られた場所ではない。霊力の密度が低く、修行の場としては向かない。しかし欠片は確かにここを指していた。\n\n渓谷の底、岩と岩の間に小さな洞があった。中に入った。狭い空間の奥に、石で封じられた場所がある。石を退かすと、下に小さな空間があった。そこに古い壺がある。壺の中に、種のようなものが一つ。\n\n欠片が反応した。これを持ち帰れ、という感覚。リン・ミンは種を大切に包んで持ち帰った。何の種かは分からない。しかし重要なものだということは、欠片の反応から明らかだった。`,
+
+  "6-9": `種を植えて三日後、光った。\n\n宿舎の鉢に土を入れて植えた。水を与えて普通に管理していたら、三日目の深夜に鉢が光り始めた。青白い光。霊力を帯びた光だ。\n\n翌朝、芽が出ていた。普通の芽ではない。葉の先端が発光している。荀儿が見て目を丸くした。「これは……霊草？　でも私が知っている霊草とは違う」「北の渓谷で見つけた」「どんな渓谷」「欠片が教えてくれた場所」荀儿はしばらく発光する芽を見つめた。「宗派の薬師に見せた方がいい。鑑定してもらわないと」「それは少し待ちたい。正体が分かる前に公開したくない」「なぜ」「欲しがる人間が出る。正体が分かってから自分で判断したい」荀儿は頷いた。「では私が文献を調べる。心当たりがないわけでもないから」`,
+
+  "7-10": `宗派内での立場が、少しずつ変わってきた。\n\n最初は「普通の子」として扱われていたのが、様々な出来事を通じて「変わった子」という評価に変わった。特別扱いではない。ただ目につくようになった。\n\n雲澈はこの変化を歓迎しなかった。目立つことは計画の妨げになる。しかし完全に隠れ続けることも難しい。\n\n解決策として、彼は「わかりやすい弱点を作ること」を選んだ。計算と理論は得意だが、特定の実技が苦手、というキャラクターを設定した。一度定着したイメージは、人を安心させる。\n\n「炎系の術が苦手なんだ」と言い始めた。確かに炎は元々あまり使わない系統だ。完全な嘘ではない。しかしこれによって、他の強さが「意外性」になる。意外性は、隠れるより効果的な時がある。于無涯だけが時々、見透かすような目をした。しかし何も言わなかった。`,
+
+  "7-6": `青雲宗での生活が安定してきた頃、雲澈は意図的に「普通の問題児」を演じ始めた。\n\n才能は見せすぎず、かといって完全に隠しもしない。規則は守るが、効率を求めすぎない。時々、同年代らしい失敗をする。完璧すぎる子供は不審に思われる。\n\n師範の于無涯だけは違った。彼は雲澈を見て、何かを感じている様子だ。毎週一度、師範は雲澈と個人的な会話の時間を作った。修行についての指導と言いながら、実際は様子を見ているのだと雲澈には分かった。\n\n「宗派の外に出たことはあるか」ある日、于無涯が聞いた。「まだありません」「いつか機会があれば、東の山脈へ行きなさい。そこには一人の老修行者がいる。私の師でもあった人だ」「どんな方ですか」「言葉では説明できない。ただ、お前のような者には会う価値がある」雲澈は頷いた。東の山脈。その場所は前世の記憶にも存在する。しかし行く時期はまだではない。情報として蓄積して、いつか使う。`,
+
+  "7-7": `内功の突破は予定より二ヶ月遅れた。\n\n原因は分かっていた。体が若い。前世では成人した体で同じ段階を越えたが、今世では十三歳の体だ。霊力の容量が違う。土台が同じでも、器が違えば積み上がる速度も変わる。\n\n雲澈は戦略を修正した。速度より安定性を優先する。前世で学んだ最大の失敗は、基礎が脆いまま高みを目指したことだ。今世ではその繰り返しはしない。\n\n突破した夜、天毒珠が強く反応した。雲澈の霊力が新しい段階に入ったことを、珠が認識したらしい。体内で温かな感覚が広がった。前世では苦しかった突破の瞬間が、今世では心地よかった。基礎がしっかりしていれば、突破は自然に起きる。\n\n「よかった」雲澈は静かに言った。宿舎の窓から夜空を見上げた。前世で見た同じ星だろうか。時代が違えば、星の配置も微妙に異なる。しかし空は変わらない。`,
+
+  "7-8": `初めての本格的な戦いは、修行の演習ではなかった。\n\n宗派の山中で薬草を採集していた時、二人の外部の修行者が現れた。見た目は旅人だが、霊力の気配が剣呑だ。「その薬草を全部置いていけ」要求は明快だった。強盗だ。\n\n雲澈は手持ちの薬草を見た。三時間かけて集めたものだ。「断る」相手は驚いた。子供が断った。「もう一度言う機会をやろう」「必要ない」\n\n戦闘が始まった。相手は二人とも四段の修行者。雲澈は現在三段の下段。数字上は不利だ。しかし前世の戦闘経験は、段位に収まらない。\n\n六十秒後、二人は地面に座っていた。雲澈の圧勝だった。技術ではなく、動き方そのものが違った。どこに力があるかを知っている者と、力任せに戦う者の差だ。「子供に……」相手の一人が呟いた。「段位は参考に過ぎない」雲澈は薬草を拾い直した。「怪我がなくてよかった。帰りなさい」`,
+
+  "7-9": `于無涯が試練を課したのは、雲澈が宗派に入って半年後だった。\n\n「一人で三日間、山の中で生き延びること。霊力使用可。ただし師範への連絡禁止」条件はシンプルだ。他の同年代の弟子には課さない特別課題だ。\n\n雲澈は三日間、山の中で過ごした。食料は自分で確保した。水は川から。夜は岩陰で。魔獣には三度遭遇した。最初の二頭は回避した。三頭目は避けられない位置だったので、最小限の力で撃退した。\n\n三日目の夕方、宗派に戻った。于無涯が待っていた。「どうだった」「問題ありませんでした」「どこが一番難しかった」「二日目の夜、雨が降った時です。乾いた場所を見つけるのに時間がかかりました」于無涯は少し笑った。「魔獣はどうした」「三頭と遭遇しました。二頭は回避、一頭は無力化」「一頭も倒さなかったのか」「必要がなかったので」于無涯は頷いた。必要のないことをしない。それが前世の経験から来る判断だということを、彼は知らない。`,
+
+  "8-10": `林雷が最初の大規模な魔法陣を完成させたのは、エルンスト学院の二年生の春だった。\n\n練習場の床いっぱいに描いた「風域展開陣」。風属性の魔力を広範囲に展開し、範囲内の気流を操る複合魔法陣だ。ドーリングの指導のもと、三週間かけて設計し、五日かけて描いた。\n\n魔力を流し込んだ瞬間、練習場全体の空気が動いた。精密にコントロールされた気流が、陣の設計通りに動いている。ドーリングが笑った。指輪の中から、珍しいことだ。\n\n翌日、練習場を管理する師範が不思議そうに床を調べていた。「誰かが陣を描いた。しかし消してある。しかしこれは……」師範は模様の痕跡を指でなぞった。「複合陣だ。しかし誰が……」林雷は遠くから見ていた。バレてはいない。痕跡を残したのは意図的だ。誰かの目に触れることで、「こういう修行者がいる」という事実だけを残す。名前は必要ない。実績が積み上がれば、いつか自然と繋がる時が来る。`,
+
+  "8-6": `魔法の基礎訓練で、林雷は最初のランクを上げた。\n\n風属性の魔法師として登録されているが、ドーリングとの修行では火、水、土の属性も練習している。表向きは一属性専門だが、実際には四属性の基礎を積んでいる。\n\nこれがバレると厄介だ。マルチ属性の魔法師は希少で、すぐに注目を集める。今はまだその時ではない。\n\n「どのくらい隠し続けるつもりだ」ドーリングが聞いた。「必要な準備が整うまで」「いつ整う」「まだ分からない。でも感覚として、今は潜む時期だ」「お前は子供の割に戦略的だな」「先のことを考えることが好きなのかもしれない」林雷は答えた。ドーリングの四千年の知恵と、林雷の十三歳の勘が、不思議と一致することが多かった。時代と年齢を超えた共鳴のようなものがある。`,
+
+  "8-7": `エルンスト学院の図書室で、林雷は一人の同級生と知り合った。\n\n名前はユーラ。金髪で、常に本を持ち歩いている。彼女が読む本の種類が興味深かった。修行理論ではなく、主に歴史と地理の本だ。\n\n「なぜ歴史を？」林雷は聞いた。「過去を知らないと、現在が見えないから」「修行者の歴史？」「人間の歴史。修行者だけじゃない。普通の人間の歴史の方が、実は参考になることが多い」林雷は考えた。珍しい視点だ。\n\n「竜血戦士の歴史は？」ユーラは顔を上げた。「バルーク家の？　少し知っているけど。なぜ？」「少し知りたくて」ユーラは本を閉じた。「バルーク家は三代前まで、この地域の守護を担っていた家系だ。衰退した理由は記録では財政難となっているが、実際は別の理由があったという説もある」「どんな説」「竜血の覚醒を恐れた者たちによる意図的な弱体化」林雷は黙っていた。ドーリングから聞いた話と一致する部分があった。`,
+
+  "8-8": `家族からの手紙が月に一度届く。\n\n父の手紙はいつも短い。母は長い。弟はまだ小さいので代わりに父が近況を伝えてくれる。バルーク家の財政は相変わらず厳しいが、父は「お前のことだけを心配している」と書いた。\n\n林雷は返事を書いた。「学院での生活は問題ない。魔法の訓練も順調だ」これは半分本当で半分嘘だ。問題はないが、それは林雷が一般的な「順調」とは異なる道を歩いているためだ。\n\nドーリングが言った。「家族のことを考えながら修行すると、集中力が散漫になる修行者が多い」「私はそうならない」「なぜ」「家族のために、という意識があるから集中できる。動機と集中は反比例じゃなくて比例する」ドーリングは少し間を置いた。「面白い視点だ。四千年で初めて聞いた考え方だ」「本当に？」「お前は時々、私が知らないことを知っている。矛盾しているようだが」林雷は笑った。「そうかもしれない」`,
+
+  "8-9": `学院の試験期間、林雷は珍しく緊張した。\n\n実技試験ではなく、筆記試験だ。魔法理論の応用問題。表向きの設定では「風属性専門の普通の生徒」だが、解答用紙に書く内容には注意が必要だ。知識を持ちすぎていることがバレないように、かつ合格ラインは確実に超えなければならない。\n\n「どう解く」ドーリングが指輪の中から言った。「問題を見せろ」「試験中は話しかけないでください」「すまん」林雷は一人で考えた。この問題の模範解答は分かる。しかし模範解答を完璧に書くと、習っていないはずの内容が含まれることになる。三番の問題だ。あえて一箇所、小さな「見落とし」を入れておく。\n\n試験が終わった後、ユーラが隣に来た。「三番の最後の計算、惜しかったね」「そうだった？」「見直せば気づいたのに」「確かに」林雷は頷いた。完璧な失点の演出は、完璧な成功より難しい。`,
+
+  "9-10": `薬老が初めて自分の過去を話したのは、シャオ・ヤンとの修行が八ヶ月を過ぎた頃だった。\n\n「かつて、私にも弟子がいた」夜の修行の後、突然そう言い始めた。シャオ・ヤンは黙って聞いた。「才能があった。私が教えたことを全て吸収した。しかし焦り過ぎた。早く強くなりたいという気持ちが、判断を狂わせた」「どうなったのですか」「私が止める前に、限界を超えた修行をした。体が壊れた」長い沈黙。「だから私は急かさない」「薬老が厳しいのはそのためですか」「厳しくても、間違った方向では厳しくない。それが私の反省から来ている」シャオ・ヤンは頷いた。指輪の中の老人が、初めて人間らしく見えた。「分かりました。急ぎません」「良い返事だ」薬老の声に、珍しく温もりがあった。`,
+
+  "9-8": `シャオ・ヤンの修行は静かに、しかし着実に進んでいた。\n\n薬老の指導のもと、霊力の作り直しは四ヶ月目を迎えた。新しく構築された霊力の流れは、以前のものとは質が根本的に違う。以前は量を追っていた。今は密度を追っている。\n\n「試してみろ」薬老が言った。「何を」「外の修行者と比べてみろ。霊力量では負けるだろう。しかし戦ってみれば分かることがある」次の日、シャオ・ヤンは弟の修行仲間の一人に声をかけた。「少し稽古をつけてくれないか」相手は笑った。力を失ったシャオ・ヤンに稽古を頼まれた形だ。しかしやってみれば分かる。試合は三十秒で終わった。相手が面食らった顔をしていた。「霊力が少ないはずなのに、なぜ」「少ない方が、使い方が上手くなる」シャオ・ヤンは答えた。`,
+
+  "9-9": `ある朝、父が部屋を訪ねてきた。\n\n珍しいことだ。父はいつも忙しく、子供の部屋に来ることはほとんどない。「少し話がしたい」彼は言った。二人は縁側に座った。「お前が最近、変わってきた気がする」「そうですか」「以前は焦りを顔に出していた。今は落ち着いている」「修行の方向が定まってきたので」「力は戻りそうか」シャオ・ヤンは少し考えた。正直に答えることにした。「戻るというより、作り直しています。以前のものより良いものが出来ると思います」父は長い間黙っていた。「信じていいか」「はい」父はシャオ・ヤンの肩に手を置いた。言葉はない。それだけで十分だった。シャオ・ヤンは初めて、家族の信頼の重みを感じた。大切にしなければ、という思いが新たに湧いた。`,
+
+  "10-6": `タン・サンが七怪学院への移籍を決めた後、青霊学院の師範たちとの別れの挨拶が始まった。\n\n担任は手紙を一通渡してきた。「七怪学院の入学審査委員長への推薦状だ。お前の意志力と判断力を書いた」「ありがとうございます」「一つだけ言っておく。七怪学院は競争が激しい。潰される者も多い」「分かっています」「なぜ分かる？　行ったことがないだろう」タン・サンは少し考えた。「想像できます。競争が激しい場所ほど、落ち着いて動ける者が強い」担任は笑った。「そう信じて動きなさい」シャオ・ウーとの別れは言葉が少なかった。「一緒に行くんだから、別れじゃないけど」彼女は言った。「そうだね」「でも青霊学院でのことは大事にしたい」「もちろん」二人は翌朝、学院を出た。新しい場所へ。準備は整っている。`,
+
+  "10-7": `七怪学院への道は三日かかった。\n\nタン・サンとシャオ・ウーは旅の間、ほとんど歩いていた。乗り物を使う財力はない。しかし歩くことに不満はなかった。道中の景色を見ながら、二人は多くのことを話した。\n\n「どんな学院だと思う？」シャオ・ウーが聞いた。「実力主義だと聞いている。入学後も定期的に選抜があって、結果によっては退学になる」「怖い」「でも逆に言えば、実力があれば認められる」「あなたなら大丈夫だと思う」「シャオ・ウーもそうだ」彼女は少し考えた。「私の武魂は……まだ怖い人がいると思う」「最初はそうかもしれない。でも実力を示せば変わる」「そう信じる？」「信じている。人は成果を見て変わる場合が多い」夕暮れ時、丘の上から遠くに七怪学院の建物が見えた。思っていたより大きかった。シャオ・ウーは息を呑んだ。タン・サンは静かに頷いた。ここから、本当の始まりだ。`,
+
+  "11-6": `東の研究宗派「玄知館」への入館試験は、書類審査と実技の二段階だった。\n\n書類審査では修行履歴と基礎知識を問う筆記試験がある。イー・ユンは筆記試験で慎重に回答した。知識は十分すぎるほどある。しかし全て正解すると怪しまれる。意図的に二問だけ外した。\n\n実技は基礎の修行術の演練だ。強さを見るのではなく、正確さを見る。これは得意だ。正確に、丁寧に。余分な力を使わず、必要なだけ使う。\n\n審査の結果は翌日出た。合格。評価欄には「基礎の完成度が高い。実力以上に将来性を感じる」と書かれていた。後者の評価が本音だろう。修行者として突出しているわけではないが、何かある、と感じさせる何かが出ているらしい。それはおそらく、前世の経験から来る「落ち着き」だ。どんな状況でも焦らない者は、長い目で見ると伸びる。審査員はそれを直感していたのかもしれない。`,
+
+  "11-7": `玄知館での最初の一ヶ月は、予想より快適だった。\n\n研究宗派という名の通り、ここの修行者は探求心が強い。力を示すより、理解を深めることに価値を置く文化だ。イー・ユンにとっては非常に過ごしやすい環境だ。\n\n同室の者は二人いる。一人は理論型の修行者で、毎晩文献を読んでいる。もう一人は実験が好きで、小さな錬成を繰り返している。どちらも純粋に修行を楽しんでいる。前世での経験から言えば、こういう環境は珍しい。大抵は競争と嫉妬が渦巻いている。\n\n「どの分野を専攻する？」理論型の同室者、チェン・ルイが聞いた。「修行術の基礎理論と、古代史を組み合わせたい」「面白い組み合わせだ。古代史は役に立つの？」「過去の修行術には、今より優れた部分がある場合がある。それを現代で応用できれば価値がある」チェン・ルイは目を輝かせた。「それは私も興味がある。一緒に研究しない？」イー・ユンは頷いた。良い仲間が見つかった。`,
+
+  "12-6": `副学長との面談は、思っていたより長かった。\n\n「その解法はどこで」「自分で導きました」「どこで学んだ基礎を元に？」「北方霊院の標準課程と、独自の試行錯誤です」副学長はしばらく考えた。「北方霊院の出身者なら、ある程度の基礎は保証されている。しかし標準課程からあの解法は出ない」「ならば独自の部分が多いということでしょうか」「正直に言えば、その解法は三十年前に別の研究者が論文として発表したものに近い。その論文を読んだか」「読んでいません」「私はそれを信じる。なぜなら、お前のやり方は独立した発想から来ている。同じ結論に別の道から到達した」ムー・チェンは黙って聞いていた。「才能は認める。しかし一つ聞く。北方霊院を追放された理由は何だ」「派閥間の対立の結果です」「自分に非はなかったか」「最善を尽くしましたが、力が及びませんでした」副学長は頷いた。「正直な答えだ。北嶺学院でしっかり力をつけなさい」`,
+
+  "12-7": `ムー・チェンが初めて上位の先輩に認められたのは、偶然の助けがきっかけだった。\n\n図書室で、上級生が複雑な霊力陣の計算に行き詰まっていた。四時間悩んでいる様子だった。ムー・チェンは通りかかった時、問題を見た。解けた。黙って通り過ぎようとした。\n\nしかし足が止まった。助けることのメリットとデメリットを考えた。目立つことへのリスクがある。しかし副学長との面談以来、少しずつ表に出ることを許可し始めている。\n\n「少し見てもいいですか」上級生は不機嫌そうに振り返った。「下級生に何が分かる」「分からなければ邪魔しません」上級生は問題用紙を見せた。ムー・チェンは五分で解いた。「この部分の展開を別の手順でやると、三段階省略できます」上級生は解答を見た。正しかった。「なぜ分かった」「似た問題を自分で解いたことがあったので」上級生は黙って考えた。「名前は」「ムー・チェンです。一年生です」「一年生か」この出会いが、学院内での立場を少しずつ変えていくことになる。`,
+
+  "1-3": `龍陳は図書館の古い棚の前に立ち、指を一冊の薄い書物の背に滑らせた。表紙には「初歩霊術入門」とあった。前世の彼には不要な知識だった。だが今の彼には、舞台に戻るための道具が必要だった。
+
+「何を探している？」背後から声がした。聖家の若者の一人が、仲間を二人連れて立っていた。顔には嘲笑が浮かんでいた。「霊力もないくせに本を読んでも無駄だろう」
+
+龍陳は振り返らなかった。「君たちの家族が北の谷の採掘権を持っているのは知っている」彼は静かに言った。「半年後に何が起きるか教えようか？」
+
+その問いの静けさが、侮辱の言葉よりも相手を不安にさせた。三人は顔を見合わせ、何も言わずに立ち去った。龍陳は本を棚に戻した。こんな程度の情報戦でさえ、まだ手加減が必要だった。本当の力を取り戻すまでの間、知恵だけが彼の武器だ。`,
+
+  "1-4": `五日後、龍陳の霊海に二番目の星が灯った。
+
+誰にも見えなかった。外から観察できるものは何もなかった。だが彼は自分の内側で、暗闇の中に輝くその光を感じた——前世では数十年かけて育てたものが、今生では五日で芽吹いた。積み重なった記憶は、近道を知っていた。
+
+彼は聖地神院の外れ、誰も来ない古い訓練場で一人修行していた。薄明の中、汗が石畳に落ちる音だけが響く。動作は単純だった——外から見れば。だが一つひとつの呼吸に、一万年分の理解が込められていた。
+
+「ここにいたの」
+
+振り返ると、葉紫雲が門のところに立っていた。珍しいことに、彼女は追いかけてきた理由を説明しなかった。ただ腕を組んで彼の動作を見ていた。数分後、彼女は口を開いた。「型が間違っている」
+
+龍陳は動きを止めた。「どこが？」
+
+「膝の角度。そこから先、力が逃げている」
+
+彼は少し驚いた。彼女の観察眼は前世でも優れていた——しかし彼がわざと崩した箇所を、この年齢で見抜くとは思っていなかった。「正しい」と彼は認めた。「気づいてくれてありがとう」
+
+葉紫雲は何も言わなかった。しかし彼の隣で同じ動作を始めた。`,
+
+  "1-5": `聖魂学院の試験は毎月末に行われる。その日、龍陳は学院の中庭に置かれた試験石の前に立った。試験石は霊力の質と量を測定する水晶の柱で、強く叩けば叩くほど高く光る仕組みだった。
+
+「無霊のくせに来たのか」後列から誰かが笑った。
+
+龍陳は気にしなかった。石の前に立ち、右手の指先を表面に触れさせた。内側で、九星覇体の術の第一段階が静かに展開する。前世では一瞬で行える操作だが、今の身体では慎重に、丁寧に。
+
+光が灯った。
+
+弱かった。銀色の光ではなく、白に近い薄い輝きが柱の下部を満たしただけだ。観衆の笑いが止まった——無霊の者が光を出したという事実に、笑いの理由を見つけられなくなったからだ。
+
+試験官の葉墨老師が近づいてきた。彼の目に浮かんだ表情を、龍陳は前世でも知っていた。驚きではなく、注意深い観察の眼差しだ。
+
+「放課後、私のところへ来なさい」老師は静かに言った。
+
+龍陳はうなずいた。この会話を、彼は三ヶ月前から待っていた。`,
+
+  "2-2": `意志力試験の結果が学院全体に広まったのは翌朝のことだった。
+
+蘇宇は廊下を歩きながら、視線が自分に集まるのを感じた——隠された視線ではなく、むき出しの計算が込められた目だ。力の均衡が変わるとき、賢い者はいち早くそれを察知する。この学院には賢い者が多かった。
+
+三年生の先輩が一人、彼の前に立ちはだかった。岩蜥蜴族の血を引く大柄な青年で、腕には自然霊紋が走っていた。「本当に500単位を超えたのか？」
+
+「機械が止まったのは500の時です」蘇宇は答えた。「それ以上は計測していません」
+
+「人間には不可能だ」
+
+「昨日までは、そう思っていました」
+
+沈黙が続いた。相手は彼の答えを嘘と決めつけることも、事実と認めることもできず、ただ立ち去った。蘇宇はその背中を見ながら、意志力がどれほど積み重ねられるものかを考えた。限界を信じることが、限界を作る。信じなければ——どこまで行けるのだろう。`,
+
+  "2-3": `研究ノートの四十七ページ目に、蘇宇は仮説を書いた。
+
+「人類の修行能力が低下したのは、才能の問題ではなく、方法論の断絶ではないか」
+
+図書館の最も古い書架には、八百年以上前の古文書が収められていた。閲覧許可を取るのに二週間かかったが、それだけの価値があった。古文書の中に、人族がまだ諸族の上位に立っていた時代の修行記録が残っていたのだ。
+
+現在の修行法との違いは明確だった。古代の人族は霊力を「蓄積するもの」として扱っていなかった——「流れるもの」として扱っていた。体内を流れる川のように、止めるのではなく、導く。
+
+蘇宇は試験当日の自分の感覚を思い出した。意志力が高まったとき、彼の体内で何かが流れ始めた感覚があった。止まっていたものが動き出したような。
+
+「やってみよう」彼はノートを閉じた。図書館の閲覧室は静かだった。誰も彼を見ていなかった。彼は呼吸を整え、意識を体の内側へ向けた。`,
+
+  "2-4": `夜の修行は五回目になった。
+
+蘇宇は寮の屋上に座り、星空の下で意識を内側に向けた。古代文書の修行法を再現しようとするたびに、体内で何かが反応した——霊力ではなく、もっと根本的な何か。意志そのものが物質に作用する感覚。
+
+岩蜥蜴族の学生が屋上への階段を上がってきた。昼間に廊下で彼を止めた先輩ではなく、別の人物だった。同学年で、名前は宋偉という。
+
+「こんな時間に何をしている？」宋偉は怪訝そうに聞いた。
+
+「修行です」
+
+「屋上で？霊力注入装置もないのに？」
+
+「道具はいりません」蘇宇は答えた。「今やっているのは、道具で測れるものじゃないので」
+
+宋偉は怪訝そうにしながらも、隣に座った。少しの間沈黙が続いた後、「俺にも教えてくれないか」と彼は言った。「測定不能な修行とやらを」
+
+蘇宇は考えた。古代の方法はまだ不完全で、成果を保証できるものではない。しかし試みることに意味があるなら——一人でやるより、二人でやった方が早く答えが出るかもしれない。「一緒にやってみましょう」と彼は言った。`,
+
+  "2-5": `一週間後、宋偉の意志力試験の値は120から310に跳ね上がった。
+
+再試験は本人が申請したもので、学院側は渋々承諾した。結果が出たとき、試験官は三度確認した。機械を交換し、もう一度測った。数値は変わらなかった。
+
+廊下で宋偉が蘇宇を見つけた時、その顔には笑いと困惑が混ざった表情が浮かんでいた。「何をした？」
+
+「何もしていません」蘇宇は正直に答えた。「ただ、流し方を変えただけです」
+
+「詳しく説明しろ」
+
+「説明するより、もう少し自分で試した後の方がいいと思います」
+
+宋偉は唇を結んだ。頭のいい人間が曖昧な答えを受け入れる時の顔——納得はしていないが、否定もできない時の顔だ。「次に何をすべきか教えてくれ」
+
+蘇宇はノートのページを開いた。四十八ページ目には、先週書き加えた新しい仮説が並んでいた。「ここから始めましょう」`,
+
+  "3-3": `栄光城の市場を歩きながら、李奇威は三つのことを同時に考えていた。
+
+一つ目——この時代の霊石の質は、彼が最後にこの大陸を歩いた時よりも二段階低下している。千年の間に、主要な霊脈が三本枯渇したのだろう。
+
+二つ目——東の商人街の区画は五十年後に壊滅的な火災に遭う。そこに店を持つ商人たちは、今から対策を始めれば間に合うかもしれない。間に合わせるべきか否かは、まだ判断していない。
+
+三つ目——彼の現在の身体は、昨日より少しだけ強くなった。
+
+三つ目が最も重要だった。
+
+少年の体は最初から器が小さかった——家柄は名家だが修行の素質に乏しく、教師たちは早々に期待を諦めていた。しかし李奇威はそれを欠点とは思わなかった。空の器ほど、充たしやすい。
+
+市場の外れに、古い書物を扱う老人の露店があった。李奇威はそこで足を止めた。棚の隅に、ほとんど字が消えかけた薄い本が置かれていた。彼は手に取り、数ページをめくった。
+
+百銀で売ってくれ、と彼は言った。
+
+老人は怪訝そうな顔をした。それは三銀の本だったから。`,
+
+  "3-4": `書物の内容は断片的だった。解読できた部分だけを抜き出すと、おそらく千二百年前の修行者が残した覚書だった。完全な技法ではなく、思索の記録——試し、失敗し、気づきを書き留めたもの。
+
+李奇威はそれを三時間で読み切った。
+
+内容のほとんどは、彼が前世で通り過ぎた段階の話だった。しかし一節だけ、彼でさえ考えたことのない視点があった。「霊は量で競うな。質で刻め」という一文。
+
+量——それは修行者が常に追い求めるものだ。より多くの霊力、より高い段階、より大きな器。しかし「質で刻む」とはどういう意味か？
+
+李奇威は目を閉じ、自分の霊海を内観した。広大ではなかった——子供の体が持てる量は限られている。しかしその限られた量の中に、密度を変化させることができるとしたら？
+
+翌朝、彼は三ページの覚書を書いた。書物の著者が気づかなかった続きを、彼は十分間の瞑想で補った。`,
+
+  "3-5": `聖地学院の入学試験は三ヶ月後だった。
+
+周囲の目には、李奇威の準備は最低限に見えていた。授業には出るが熱心ではなく、課外の修行にも参加しない。家の教師たちは溜息をついた——この子は諦めている、と彼らは思った。
+
+実際には逆だった。
+
+彼が学院の授業に出るのは、現代の修行論を観察するためだった。この時代の標準的な方法論がどれだけ非効率かを確認するためだ。課外修行に参加しないのは、他人と合わせる必要がないからだ。彼の修行は夜中に一人で行われ、外から見えるものは何もなかった。
+
+三ヶ月で、彼の霊力は三段階上昇した。
+
+数値だけを見れば普通に聞こえる。しかしその三段階の密度は、標準的な六段階分の実力に相当した。器が小さくても、中身が濃ければいい——書物の著者の言葉を、彼は自分なりに解釈していた。
+
+試験前夜、李奇威は窓から星空を見上げた。かつて彼が立っていた高さから見た星と、今見る星は同じ星だ。距離が変わっただけだ。`,
+
+  "4-3": `契約書の第三条には「依頼人の秘密保持」とあった。アーヴェスはそれを丁寧に読み、一つの文字を修正してから署名した。
+
+ミラ・アシュヴェイルは修正箇所を確認した。「秘密保持の範囲を『業務上知り得た情報』から『業務遂行に必要な情報』に変更した。意味が逆になる」
+
+「そうだ」アーヴェスは骸骨の手指を組み合わせた。「私は秘密を守ることには同意する。しかし、あなたが隠したい情報の中に、私が業務を遂行するために必要なものが含まれている場合は別だ。その場合は共有してもらう」
+
+「それは私が決めることではないの？」
+
+「いいえ。私が決める。私はリッチだ。雇われても、指示には従わない。助言と行動を提供する」
+
+長い沈黙があった。ミラは窓の外を見た。骨の宮殿の窓から見える景色は、骨と霧と暗い空だけだった。不快ではない——ただ現実的だった。
+
+「わかった」と彼女は言った。「でも一つ聞かせて。なぜ今、雇用者を募っているの？」
+
+「力が必要だ」アーヴェスは答えた。「私の力だけでは足りないものが。今は足りない」
+
+それが正直な答えだと、なぜかミラには分かった。`,
+
+  "4-4": `最初の依頼は単純なものだった——書類の紛失。
+
+正確には、グレイマントル協会の本部から消えた調査報告書を探すことだった。内部の誰かが持ち出したか、あるいは別の誰かが持ち込んだかのどちらかだ。ミラの本業はそういった「どちらか」を解明することだった。
+
+アーヴェスは現場には行かなかった。骸骨のリッチが公共の建物を歩けば騒ぎになる。代わりに彼は骨の宮殿の書斎で、ミラが持ち帰った情報を分析した。
+
+「書類は盗まれたのではない」彼は言った。「複製されたのだ」
+
+「根拠は？」
+
+「消えた書類が存在したとされる棚の配置。記録によれば左から三番目、下から二段目。しかしその位置は閲覧記録に残っていない。つまりその書類を読んだ者は、正規のルートを使っていない」
+
+「それは盗難の証拠にもなる」
+
+「本物の盗難なら、もっとうまくやる。あの協会には能力ある者がいるはずだ。これは急いでいた者の仕事だ——時間がなかったか、目的が限定的だったかのどちらかだ」
+
+ミラはメモを取った。雇用者はリッチに頭脳を借りることができる。それは予想以上に実用的なことだった。`,
+
+  "4-5": `複製された書類の目的が判明したのは五日後のことだった。
+
+書類の内容は、北の森に眠る古代遺跡の座標だった。学術的な記録として協会に保管されていたが、実際には長年放置されていた情報だ。なぜ今、誰かがそれを必要としたのか。
+
+「遺跡に何があるか知っているか？」ミラはアーヴェスに聞いた。
+
+「古いものだ」アーヴェスは即座に答えた。そして少し間を置いてから付け加えた。「非常に古いものだ。私が知っているということは、四百年以上前から存在していたということだ」
+
+「あなたが行ったことがある？」
+
+「一度だけ。あの頃の私はまだ人間だった」骸骨の顔に表情はないが、その声に何かが滲んだ。「入れなかった。封印がかかっていた。当時の私の力では解除できなかった」
+
+「今は？」
+
+アーヴェスはゆっくりと立ち上がった。四百年分の思考が、一瞬で整理された。「今の私でも難しい。しかし——二人なら、話が変わるかもしれない」ミラは彼を見た。「それは依頼の範囲内？」「それは交渉の余地がある問題だ」`,
+
+  "5-3": `聖女葉紫雲が聶離に話しかけたのは、彼が学院に戻って十日目のことだった。
+
+理由は単純だった——彼女が見ているものを確認したかったのだ。
+
+「あなたは変わった」廊下の角で、彼女は静かに言った。通りすぎる学生が二人、振り返った。聖家の令嬢が、落ちこぼれの聶離に声をかける——それ自体が異常だった。
+
+「以前から変わらない部分もあります」聶離は答えた。
+
+「いいえ」葉紫雲は首を振った。「昔のあなたは、私が話しかけると緊張した。今は違う」
+
+聶離は少し黙った。彼女の観察力は前世でも一流だったが、今生ではさらに鋭いのかもしれない、と思った。あるいは彼が隠せていないだけか。
+
+「何かを知っているの？」彼女は続けた。「答えなくていい。でも——あなたが知っていることの一部が、私たちにとっても重要なことだという気がする」
+
+聶離は彼女を見た。前世では、この会話をするのに三年かかった。今生では十日で来た。「一つだけ聞きます」と彼は言った。「信じてもらえますか——証拠なしに？」
+
+葉紫雲は少し考えた。「話を聞いてから判断する」
+
+それで十分だった。`,
+
+  "5-4": `魂獣の森に入るのは、学院の規則では十四歳以上の生徒に限られていた。
+
+聶離は十三歳で、規則を知っていて、入った。
+
+目的は単純だった——特定の魂獣の行動パターンを確認することだ。前世の記憶によれば、この森の北東に銀紋雪狼の群れがいる。群れのリーダーは三十年後に十段階を超える魂獣になる存在で、今は七段階程度のはずだ。七段階の魂獣と戦うことは今の彼には不可能だが——観察するだけなら別の話だ。
+
+三時間歩いて、狼の群れを見つけた。
+
+リーダーは予想より大きかった。聶離は三十メートル離れた木の上に静かに腰掛け、群れの動きを記録した。狼たちは彼の存在に気づいていた——だが攻撃しなかった。
+
+なぜか。
+
+魂の力の匂い、と聶離は考えた。彼の魂の力は今は微弱だが、前世で培った「質」がある。それが、ある種の魂獣に対して「危険」のシグナルを発しているのかもしれない。
+
+記録を終えて帰ろうとしたとき、後ろから足音がした。振り返ると、葉紫雲が立っていた。
+
+「規則違反よ」と彼女は言った。
+
+「あなたもです」と彼は返した。`,
+
+  "5-5": `雪がちらつく夕方、聶離は葉墨老師の書斎を訪れた。
+
+約束の時間より少し早かった。老師はすでに待っていた——書斎の椅子に座り、何かを考える顔で。聶離が入ると、老師は彼に向き直った。
+
+「座りなさい」
+
+聶離は座った。
+
+「何者だ」老師は単刀直入に言った。「お前は」
+
+「聶家の子です」
+
+「それは答えではない」
+
+しばらく静寂が続いた。聶離は老師の目を見た。前世でも、この目は嘘を見抜いた。
+
+「前世の記憶があります」聶離は静かに言った。嘘をつくことはできた。しかしこの人物に嘘をつくことは、戦略的に正しくなかった。「どれだけ生きたかは言えません。ただ——この世界がどこに向かうかを、ある程度知っています」
+
+老師は長い間黙っていた。
+
+「証明できるか？」
+
+「半年待ってください」聶離は答えた。「北の山脈で何が起きるか、先にお伝えします。半年後に確認できるはずです」
+
+老師は立ち上がり、窓の外を見た。「それが本当なら——お前をどう教えればいいのか分からんな」
+
+「私が教える側になれるかもしれません」聶離は静かに言った。老師は振り返り、初めて笑った。`,
+
+  "6-3": `立方体の欠片が林明に何をしたのか、彼が初めて正確に理解したのは、三週間後のことだった。
+
+それは記憶ではなかった。知識でも、技術の伝授でもなかった。欠片がしたことは——観察だった。林明の体のすべての動作を、その根本から観察し、記録し、フィードバックとして返してくる。鏡のようなもの。ただし鏡は「今の自分」を映すが、欠片が見せるのは「あるべき自分」だった。
+
+彼はその日の訓練で、三つの基本技法をゼロから再構築した。
+
+外から見れば同じ動作だった。しかし内側は根本的に違った。以前は「習ったから」動いていた。今は「理解したから」動いていた。
+
+銀羽の女弟子——林暁通という名だと後で知った——は訓練場の端から彼を観察していた。昨日と同じ場所に同じように立って、同じように見ていた。
+
+「昨日より良くなった」彼女は言った。
+
+「何が変わったか分かりますか？」林明は聞いた。
+
+彼女は少し考えた。「外見は変わっていない。でも——動きに迷いがなくなった。判断が速くなった」
+
+「正解です」林明は答えた。「理由が分かりますか？」
+
+「分からない」素直な答えだった。「だから明日も見に来る」`,
+
+  "6-4": `段階試験の日、林明は三級の試験を受けた。
+
+本来ならまだ二級の途中のはずだった。申請したとき、試験官は眉をひそめた。「三級には霊力の最低基準がある。君の記録では到達していない」
+
+「基準を超えています」林明は言った。「確認してください」
+
+測定の結果、数値は基準を上回っていた。試験官は二度測り直した。三度目には別の機械を持ってきた。それでも同じ結果だった。
+
+三級試験の内容は実戦形式だった——同段階の弟子との模擬戦が三試合。林明は最初の二試合を接戦で勝ち、三試合目をあっさり負けた。三試合目の相手は突出した素質の持ち主で、欠片からのフィードバックが「現時点では勝てない」と示していた。その通りだった。
+
+試験後、林暁通が待っていた。「三試合目は何故負けた？」
+
+「力が足りなかった」
+
+「でも戦い方は完璧に近かった。本来なら惜しかった」
+
+「本来ならそうです」林明は答えた。「ただ、今回の目的は勝つことではなかった。学ぶことでした」
+
+彼女は首を傾げた。「三試合目の相手から何を学んだの？」
+
+「六ヶ月後に超えるための、具体的な課題です」`,
+
+  "6-5": `欠片が初めて「意図」を示したのは、四ヶ月目の夜だった。
+
+林明は修行室で一人、呼吸を整えていた。深夜で、廊下は静かだった。欠片は通常、動作への反応としてフィードバックを返す——しかしその夜、彼が何もしていない状態で、欠片が何かを送ってきた。
+
+感覚ではなく、方向感覚だった。
+
+東。山の方向。距離は分からなかった。
+
+林明は五分間座ったまま考えた。これは行くべきか。欠片は今まで一度も彼を危険な方向に誘導したことはなかった。しかし確信もなかった。
+
+彼は起き上がり、修行着のまま外に出た。
+
+山道を一時間歩いた。道の途中で林暁通に出会った——彼女もまた、何かに引かれるように歩いていた。
+
+「あなたも？」と彼女は言った。
+
+「感じましたか？」
+
+「方向だけ。何があるかは分からない」
+
+二人で歩き続けた。夜明け前、岩の割れ目の奥に、薄く光る何かを見つけた。鉱石ではなかった。霊脈の断片でもなかった。それは——また別の欠片だった。
+
+林明は振り返った。「あなたのですか？」
+
+林暁通は首を振った。「でも——呼ばれた気がした」
+
+欠片は二つになった。`,
+
+  "7-3": `天空毒珠の声を、雲澈が初めて聞いたのは転生から十日後だった。
+
+声というより感覚だった——静かで、冷たく、しかし敵対的ではない。珠が発するシグナルを、彼の意識が言語として解釈している、というのが正確なところだろう。
+
+「何を望む？」彼は内側に向けて問いかけた。
+
+応答は即座だった——方向性。ある場所への。
+
+「急ぐ必要はない」彼は答えた。「今の私の体では行けない場所だ。力をつけてから行く」
+
+珠は沈黙した。同意とも反論とも取れる沈黙だった。
+
+雲澈は瞑想を解いて窓を開けた。外は朝の空気で、鳥の声がした。この大陸を歩くのは、今の記憶では初めてだ——しかし別の意味では、何千回も歩いた場所でもある。大陸は変わらない。変わるのは人だ。
+
+彼が変えるのは——この大陸で起きるはずの歴史だ。
+
+裏切った者たちへの復讐を、彼は急いでいなかった。急ぐ者は判断を誤る。彼がやることは一つずつ、確実に。最初の一歩は、基礎を作り直すことだった。`,
+
+  "7-4": `新月profound宮の入学試験は、この地域では唯一、人族と他族が同じ条件で競う場だった。
+
+雲澈は試験の三日前に街に着いた。観察のためだ。試験会場の配置、試験官の顔ぶれ、他の受験者の傾向。情報は力だ——特に、今の彼のように身体の力がまだ十分でない時には。
+
+観察中、一人の少年に気づいた。十四歳前後、痩せた体格、目だけが妙に鋭かった。一人で路地の隅に座り、木に向かって小石を投げていた——正確に、同じ場所に、繰り返し。力の制御の練習だ。
+
+「受験者か？」雲澈は声をかけた。
+
+少年は振り返り、雲澈を値踏みした。「そうだ。お前は？」
+
+「同じだ。何族だ？」
+
+「人族」少年は言った。少し身構えるように。「問題あるか？」
+
+「ない」雲澈は隣に腰を下ろした。「ここ三日で人族の受験者を五人見たが、全員明日には諦めて帰る顔をしていた。お前だけ違う」
+
+少年は少し沈黙してから言った。「お前もか？」
+
+「私も人族だ」
+
+初めて、少年の顔に何かが緩んだ。`,
+
+  "7-5": `試験は三つの段階で構成されていた。
+
+第一段——身体能力の測定。雲澈は今の体の限界で無難に通過した。突出した結果ではなかったが、落第ラインからは十分に上だった。
+
+第二段——霊力の質の測定。ここで彼は慎重だった。天空毒珠を持つ体の霊力は、測定機に異常な反応を示す可能性があった。珠を完全に抑制した状態で測定を受けた。結果は平均的だった。
+
+第三段——実戦形式の試験。受験者同士が対戦し、三勝した者が通過する。
+
+雲澈は最初の二戦を勝った。手の内を見せすぎないよう、最小限の技だけを使って。三戦目の相手は宮の中でも注目されていた受験者で、年齢の割に実力が高かった。
+
+その戦いを、雲澈は負けた。
+
+意図的に。
+
+合格ラインの二勝は達成した。そして三戦目の相手には、彼の真の実力を見せなかった。宮に入るのは始まりに過ぎない。ここから先、どれだけ見えていないかが大切だ。
+
+路地の少年——名は嵐天と言った——は二勝二敗で通過した。宮への道を歩きながら、「なぜ最後は負けた？」と彼は聞いた。雲澈は笑った。「勝ちすぎると目立つ」`,
+
+  "8-3": `エルンスト学院の第一週が終わった。
+
+林磊はその夜、寮の窓から中庭を見下ろしながら、一週間分の情報を整理した。学院の構造、教師の専門分野、同学年の学生の傾向、使用可能な施設と時間帯。情報の収集は修行と同じくらい重要だと、ドゥーリン老師から最初に教わったことだ。
+
+「整理したか？」老師の声が指輪から聞こえた。
+
+「だいたい」林磊は答えた。「一つ気になることがある」
+
+「言ってみなさい」
+
+「魔法の授業で、教師が基礎理論を三回繰り返して教えた。最初の説明と三回目の説明が微妙に違っていた」
+
+短い沈黙があった。「どう違った？」
+
+「最初は『霊力は蓄積するもの』と言った。三回目は『霊力は流れるもの』と言った。本人は気づいていなかったと思う」
+
+「どちらが正しいと思う？」
+
+林磊は考えた。「両方正しいと思う。どちらの視点で見るかで、使い方が変わる」
+
+「良い」老師は言った。「明日の授業で、その視点を持ってもう一度聞きなさい。違うものが見える」`,
+
+  "8-4": `風の魔法師として知られる少年、レイ・バーナードが林磊の前に現れたのは入学から二週間後のことだった。
+
+彼は学院の中でも才能で注目される存在だった——風属性の魔法師として、その緻密な制御は学年で一番と言われていた。なぜ林磊に声をかけてきたのか、最初は分からなかった。
+
+「龍血戦士の末裔か」レイは言った。馬鹿にしているわけではなかった。「血は薄いが、体の作りが違う。見て分かる」
+
+「魔法師が体格を分析するのか？」
+
+「風は見えないものを感じる。体格も、力の流れも、同じだ」レイは続けた。「君の魔法は遅い。基礎がまだ固まっていない。でも動き方が良い——戦士の動きだ。魔法師の動きではない」
+
+「それが問題か？」
+
+「いや」レイは首を振った。「組み合わせによっては、強みになる。魔法師の動きは予測できる。戦士の動きは——予測しにくい」
+
+林磊はこの少年を見た。真剣だった。「何が目的だ？」
+
+「一緒に訓練したい。私は魔法は速い。でも体術は弱い。お互いに足りないものを持っている」
+
+ドゥーリン老師は、この提案を聞いたとき一言だけ言った。「受けなさい」`,
+
+  "8-5": `指輪の石が光ったのは深夜だった。
+
+林磊は起き上がり、意識を指輪に向けた。老師は滅多に夜中に話しかけてこない——重要なことがある時だけだ。
+
+「外に出なさい」老師は言った。「森の方向に、何かがいる」
+
+「魔獣か？」
+
+「分からない。しかし普通ではない。感じてみなさい」
+
+林磊は服を着て窓から外に出た。夜の空気は冷たかった。森の方向に意識を向けると——老師の言う通り、何かがあった。魔獣の霊力でも、人の霊力でもない。もっと根本的な何か——大地そのものが呼吸しているような感覚。
+
+「霊脈か？」林磊は低い声で言った。
+
+「そう思う」老師は答えた。「ただし——活性化しつつある霊脈だ。普段は眠っている。今夜、何かが刺激した」
+
+「何が？」
+
+「君だ」
+
+林磊は足を止めた。「私が？」
+
+「龍血戦士の血が、霊脈に反応している。そういう記録が古い文献にある。おそらく——その霊脈の眠りを覚ましたのは、君がこの学院に来たからだ」
+
+林磊は森を見た。暗かった。しかし何かが光りを持って待っているような気がした。「行って確認すべきか？」
+
+「もちろん」老師は言った。「それは君のものだ」`,
+
+  "9-3": `蕭炎の祖父は、孫の変化に最初に気づいた人物だった。
+
+老人の名は蕭戦といった。蕭家の家長で、修行の道から退いた今も鋭い観察眼を保っていた。孫が三日前から何かが違う——話し方が落ち着いた。動きに無駄がなくなった。以前は隠せなかった焦りが、消えた。
+
+「何があった？」夕食後、二人きりになったとき、蕭戦は直接聞いた。
+
+「師匠ができました」蕭炎は答えた。
+
+「師匠？どこの？」
+
+「今は言えません」
+
+蕭戦は孫の目を見た。嘘ではなかった。隠しているが、それには理由がある——そういう目だった。老人は追及しなかった。「強くなるか？」と代わりに聞いた。
+
+「必ず」蕭炎は静かに、しかし確信を持って答えた。
+
+蕭戦は息を吐いた。三年間、この子が霊力を失ったまま衰えていくのを見てきた。何度も声をかけたが、心に届いていなかった。今は——届いている。何かが変わった。何が変えたかは分からなくても、変わったことは確かだ。
+
+「困ったことがあれば言え」老人は言った。「それだけだ」`,
+
+  "9-4": `最初の錬丹は失敗した。
+
+薬草を砕く力加減が強すぎた。熱の制御が一秒遅れた。成分が分離して、丹炉の中で小さな爆発が起きた。蕭炎は顔に煤をつけながら丹炉の前に座っていた。
+
+「また」と薬老師匠の声が聞こえた。
+
+「はい」蕭炎は答えた。
+
+「どこが間違いだったか分かるか？」
+
+「熱です。最後の段階で高くしすぎました」
+
+「それだけか？」
+
+蕭炎は考えた。炎の記憶を巻き戻すように。「砕き方も問題でした。細かすぎて、成分が変性した」
+
+「良い」師匠は言った。「失敗から何を学ぶかが、錬丹師の実力を決める。もう一度やれ」
+
+蕭炎は新しい薬草を用意した。前回の失敗を頭の中で整理しながら、手順を組み直した。今度は熱を低めに始め、砕き方を粗めに。丁寧に、急がずに。
+
+三時間後、丹炉を開けると——完璧ではなかったが、形になったものが出てきた。
+
+「合格ではない」師匠は言った。「しかし次は合格できる」
+
+蕭炎は黒いかたまりを手のひらに載せた。失敗した丹薬だが、自分が作ったものだ。何かが胸の中で、小さく燃えるものを感じた。`,
+
+  "9-5": `蕭薫兒が蕭炎の変化に気づいたのは、五ヶ月目のことだった。
+
+彼女は幼い頃から蕭炎を知っていた——天才と呼ばれ、霊力を失い、落ちぶれた少年を。蕭家の中で彼に優しくしていたのは彼女だけだったかもしれない。しかしそれも、哀れみから来るものだったと正直に言えば——そうかもしれなかった。
+
+今は違う。
+
+訓練場の端で、蕭炎が基礎動作を繰り返しているのを見た。地味な動作だった。しかし繰り返すたびに——僅かに、確実に、精度が上がっていた。それを一時間続けた。休憩なしに。焦りなしに。
+
+「蕭炎」彼女は声をかけた。
+
+彼は振り返った。以前と目が違う——何年も先を見ているような、落ち着いた目だ。
+
+「何してるの？」
+
+「修行です」
+
+「何の修行？霊力なしで？」
+
+「霊力なしでできる修行は、霊力があるときより難しい」蕭炎は答えた。「だから基礎を固めるのに適している」
+
+蕭薫兒は少し間を置いた。「いつから、そんなふうに考えるようになったの？」
+
+「しばらく前から」彼は微笑んだ。前世より若い顔で、前世より成熟した笑いだった。「一緒に訓練しますか？教えられることがあるかもしれない」`,
+
+  "10-2": `闘羅大陸の朝は、唐三が知っていた朝と少しだけ違った。
+
+空気の質が違う——修行の気が濃い。彼が前世で過ごした崖の上の洞窟より、ここの方が自然霊力が豊富だった。それだけでなく、大地そのものが修行者の存在を前提として作られているような感覚があった。
+
+彼は寝台から起き上がり、窓を開けた。外は霧だった。山の中腹にある小さな村——ここが今の彼の出発点だ。
+
+唐三は手を見た。七歳の小さな手だ。前世では、この手で数百の技を扱い、天下無敵と言われた双刃を持ち、最後には自らの命と引き換えに技術を守った。
+
+今はただの子供の手だ。
+
+「もう一度、最初から」彼は静かに言った。言い訳も、焦りも、誇りも、なしに。ただ、積み上げ直す。
+
+彼は床に座り、目を閉じた。魂の目覚めは三年後だ。それまでの時間を、何に使うか——前世でしなかった準備をすることだ。体幹の強化、柔軟性の訓練、平衡感覚の徹底的な鍛錬。修行の力がなくても、体は鍛えられる。そして体が整っていれば——魂が覚醒したとき、違う始まり方ができる。`,
+
+  "10-3": `魂の覚醒式は十歳の誕生日に行われた。
+
+村の長老が司式者を務め、近隣の村からも数人の修行者が立ち会いに来た。唐三の父親の顔を知る者がいなかったが、母の記憶を持つ者は何人かいた——美しく、強く、若くして亡くなった女性だったと、誰もが静かな声で言った。
+
+唐三は覚醒石の前に立った。
+
+何が出るか、彼は知っていた。前世と同じ魂が覚醒するなら——青銀草だ。最弱と呼ばれる攻撃系魂だ。会場の期待は、最初から低かった。
+
+光が出た。
+
+青かった。草の形だった。
+
+集まった人々の表情から、落胆が消えた——正確には、表情が消えた。失礼のない、しかし明らかな失望の沈黙だ。
+
+唐三は青銀草を見た。前世でこれが最終的にどうなったかを、彼は知っていた。誰もがこの魂を弱いと言った。しかし使い方次第で、それは覆せる。
+
+「問題ない」と彼は声に出さずに思った。「問題にならないようにする」`,
+
+  "10-4": `修行道場への入門試験の前日、唐三は川岸で一人、体術の練習をしていた。
+
+道場の試験は魂の力だけを見るわけではなかった——体術、反応速度、判断力も評価される。唐三は三年かけて体を作り直した。前世の記憶が示す「最適な基礎」を、子供の体で一から積み上げた。
+
+水面に石を跳ばした。五回跳んで沈んだ。
+
+後ろから足音がした。振り返ると、同じ年頃の少年が立っていた。体格がよく、自信に満ちた目をしていた。「試験を受けるのか？」
+
+「明日」唐三は答えた。
+
+「俺も」少年は石を拾い、水面に投げた。七回跳んだ。「俺の名はマタイ。道場では有名な一家の出だ。試験で会うな」
+
+唐三は次の石を手に取った。「唐三という。どこの出でもない」
+
+少年は少し笑った。馬鹿にしているのか、親しみを示しているのか、分からない笑いだった。「どこの出でもないのに、なぜ道場を目指す？」
+
+「強くなりたいから」
+
+それは最も単純な答えだった。しかし言いながら、唐三はそれが正確ではないと気づいた。強くなりたいのではない——今度こそ、守れるほど強くなりたいのだ。`,
+
+  "10-5": `道場の試験は午前中に終わった。
+
+唐三は合格した。体術の点数が予想より高く、魂の力の弱さを補った。審査員の一人は試験後に「青銀草で合格するのは十年ぶりだ」と言った。
+
+マタイも合格した。総合点は唐三より高かった。
+
+道場への帰り道、二人は並んで歩いた。最初は無言だったが、マタイが口を開いた。「お前の体術、どこで習った？」
+
+「独学です」
+
+「信じられない」
+
+「本当です」
+
+マタイは唐三を横目で見た。「なぜそこまで基礎をやる？魂の修行が本体のはずだろう」
+
+「魂の力は、体という入れ物に左右されます」唐三は答えた。「入れ物が弱ければ、どれだけ良い魂があっても使いきれない」
+
+しばらく沈黙があった。「それを自分で考えたのか？」
+
+「昔、誰かに教わった」
+
+誰かというのは——前世の自分自身だ。しかしそれは言わなかった。マタイは「良い師匠だ」と言った。唐三はうなずいた。「そうです」`,
+
+  "11-2": `修行の才とは何か、を弈云は転生して初めて本当の意味で考えた。
+
+前世では答えは明確だった——才とは霊根の質と量だ。良い霊根を持って生まれた者は速く成長し、貧しい霊根の者は遅い。それは覆しがたい事実として、修行界全体が受け入れていた。
+
+しかし今生の弈云の体は、前世より霊根の質が低かった。
+
+前世で手に入れた技術と経験は、全てある。しかしそれを扱う器が劣っている。だとすれば——経験は才の差を超えられるのか？
+
+答えを出すために、彼は実験を始めた。
+
+修行を数値で記録した。同じ技法を使って、今の体での成長速度と、前世の同じ年齢での成長速度を比較した。記憶の中の数値と、今日実際に測れる数値を並べた。
+
+一週間後、最初の結論が出た。
+
+速度は確かに遅い。しかし方向性が違う——前世では気づかなかった微細な修正を、今は意図的に行えた。粗く速く進んでいた前世より、緻密に遅く進む今の方が、基礎の密度が高かった。`,
+
+  "11-3": `三ヶ月後、弈云は道場の測定試験を受けた。
+
+数値は平均以下だった。同学年の中で、下から三番目の結果だ。道場の師範は「努力が必要」と書面に記した。
+
+弈云はその書面を受け取り、丁寧に折りたたんだ。
+
+「弈云」師範が声をかけた。「がっかりしたか？」
+
+「いいえ」
+
+「数値は低い。才能の問題だ。努力でどこまでカバーできるかは——正直に言えば、分からない」
+
+「そうですね」弈云は穏やかに答えた。師範の言葉は悪意のない事実の陳述だった。「ただ、一つ聞いていいですか？」
+
+「何だ？」
+
+「この数値が三ヶ月後に倍になったら、どう評価しますか？」
+
+師範は少し考えた。「倍には簡単にならない。才能の壁がある」
+
+「もしなったとしたら？」
+
+「……才能の定義を見直す必要があるな」
+
+弈云は頭を下げた。「三ヶ月後にまたお願いします」師範はその背中を見ながら、何かを思った——あの目は、できると信じている目ではなく、すでに知っている目だ。`,
+
+  "11-4": `林新通という少女が話しかけてきたのは、弈云が道場に来て四ヶ月目だった。
+
+彼女は学年で最も才能が高いと言われていた——霊根の質が突出していて、同世代との比較では頭一つ抜けていた。なぜ彼のような平均以下の学生に近づいてくるのか、最初は不思議だった。
+
+「あなたの修行を見ていた」彼女は言った。率直な言い方だった。「一ヶ月前と今とで、動きが変わった。速くはなっていないけど——精度が上がった」
+
+「見えましたか」弈云は少し驚いた。彼女の観察眼は前世の記憶にある通りだった。
+
+「何をしているの？」
+
+「基礎を緻密にしています。速さより、密度を優先して」
+
+「それで強くなるの？」
+
+弈云は彼女を見た。この問いに正直に答えることが、長い目で見て正しいと判断した。「強くなる速度は遅い。しかし到達できる高さが変わると思っています」
+
+林新通は少し沈黙してから言った。「私と一緒に修行しない？私は速いけど、密度が薄い。あなたとは逆だと思う」
+
+弈云は少し考えた。「試してみましょう」`,
+
+  "11-5": `半年が経過して、弈云の測定値は前回の二倍を超えた。
+
+師範は測定を三回繰り返した。機器を変えて、もう一度測った。結果は変わらなかった。書類に書かれた前回の数値と、今日の数値を並べ、師範は長い間何も言わなかった。
+
+「どうやった？」彼はついに言った。
+
+「緻密にしました」弈云は答えた。「量を増やすのではなく、今ある量の密度を上げました」
+
+「そんな修行法は標準にない」
+
+「標準にないだけで、不可能ではなかったということです」
+
+林新通も同じ日に測定を受けていた。彼女の数値は前回より三割上昇していた——速度は変わっていないが、密度が増していた。
+
+師範は二人の数値を見比べた。「二人で何をした？」
+
+「お互いの欠点を補いました」弈云は答えた。「私は密度を、彼女は速度を持っていた。交換したわけではありませんが——互いのやり方を見ることで、自分のものが変わりました」
+
+師範は書類を閉じた。「標準的な修行論では説明できないな」
+
+「これが、新しい基礎になるかもしれません」弈云は静かに言った。`,
+
+  "12-2": `北嶺学院は牧塵の記憶よりずっと小さかった。
+
+前世——あるいは正確には、追放される前——の彼は中央大陸の最上位学院に籍を置いていた。比較すれば北嶺学院は地方の小規模な施設に過ぎない。しかしそれは同時に、注目されにくいということでもあった。
+
+「まず、状況を整理する」牧塵は寮の部屋で一人、考えた。
+
+彼の霊力は現在「霊動境」の初期段階だ。前世で最終的に到達した境地から考えれば、はるか遥か手前にある。しかし今生では最初から高い地点に立つ必要はない——正しい方向に、確実に進めばいい。
+
+霊力の路線図が頭の中にあった。前世で歩いた道のりの記憶だ。失敗した箇所、間違えた選択、遠回りになった決断——全部覚えている。今度はその失敗を避けながら進める。
+
+「ただし」と彼は思った。「同じ道は歩かない」
+
+前世と同じ選択をすれば、前世と同じ結果になる可能性が高い。今生では、意図的に違う道を選ぶ必要がある場面がある。それがどこかを、冷静に判断しながら進む。`,
+
+  "12-3": `新入生の交流戦が第二週に行われた。
+
+形式は単純だった——希望者同士が模擬戦を行い、上位の成績者が学院の注目を集める。参加は任意だったが、ほぼ全員が参加した。入学直後に実力を示すことが、この後の学院生活に影響するからだ。
+
+牧塵は参加した。目立つためではなく、現在の自分の体の能力を正確に測るために。
+
+三試合行った。一勝二敗だった。
+
+一敗目は力の差が明確だった——相手の実力が上だった。二敗目は自分のミスだった——前世の感覚で動いて、今の体の反応速度と合わなかった。
+
+「まだ身体と頭が合っていない」牧塵は試合後に思った。前世の記憶は正確だが、今の体の限界を過大評価してしまう癖がある。それを修正するのに、もう数週間かかるだろう。
+
+試合を見ていた羅璃が、後から声をかけてきた。「二敗目は分かっていて負けたでしょう」
+
+牧塵は彼女を見た。「なぜそう思う？」
+
+「二敗目だけ、試合中に考えている顔をしていた。勝とうとしていなかった」
+
+「正解です」牧塵は答えた。「あの試合で何かを見つけようとしていた」
+
+「何を？」
+
+「自分の体の限界」`,
+
+  "12-4": `一ヶ月後、牧塵は霊動境の第三段階に達した。
+
+標準的なペースより少し遅い。しかし彼には数値より大切にしていることがあった——段階が上がるたびに、前の段階の基礎が完全に固まってから次に進む。急いで上昇して後から基礎の穴が出るより、遅くても穴のない進み方の方が長期的には速い。
+
+それを理解している人間が学院の中にほとんどいないことを、牧塵は少し奇妙に思った。みな目先の数値を追っていた。
+
+羅璃は例外だった。
+
+彼女の修行方針は牧塵と似ていた——数値より質を優先する。才能は疑いなく高かったが、急がなかった。なぜそういう方針なのかを、牧塵は一度聞いたことがある。
+
+「師匠に言われた」と彼女は答えた。「良い建物は基礎から作る、と」
+
+「良い師匠ですね」
+
+「あなたには師匠がいないの？」
+
+「今はいません」牧塵は答えた。「でも——昔、誰かに教わった気がする」
+
+前世の記憶は、師匠の顔まで思い出せなかった。しかしその言葉は残っていた。`,
+
+  "12-5": `新入生大会は三ヶ月後に開催される——それが学院の恒例行事だった。
+
+学年末の大会と違い、新入生大会は実力ではなく「成長」を見るものだ。入学時から現在までの変化量が評価される。そのため、最初から高い者より、低い出発点から大きく伸びた者が注目される。
+
+牧塵の入学時の測定値は平均を下回っていた。
+
+そして現在の値は、平均を大きく超えていた。
+
+数値だけを見れば、大会で注目される立場になっていた。それは意図していなかったが、避けられない結果でもあった。
+
+「どうするの？」羅璃が聞いた。大会の参加申請締め切りの前日だった。
+
+「参加します」牧塵は答えた。
+
+「目立つことになる」
+
+「分かっています」
+
+「前世——いや、何か特別な経験があるの？」彼女は慎重に言った。「時々、あなたは経験したことのない何かを知っているように見える」
+
+牧塵は彼女を見た。この観察眼は前世でも知っていた。「あなたは鋭い」
+
+「答えにならない」
+
+「答えられる時に答えます」彼は静かに言った。「今は——一緒に大会を戦いましょう。それだけで十分だ」`,
+
+};
+
+// Get chapter content - use pre-written if available, else generate via API
+function getChapterContent(novelId, chapterNum, novelTitle, novelAuthor, novelGenre, novelDesc, callback) {
+  const key = novelId + '-' + chapterNum;
+  if (CHAPTER_CONTENT[key]) {
+    // Use pre-written content
+    setTimeout(() => callback(CHAPTER_CONTENT[key]), 300);
+    return;
+  }
+  // Try API (may not work on GitHub Pages due to CORS/API key)
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: 'You are a skilled xianxia/wuxia novel author. Write one compelling chapter in English with flowing, dramatic prose. Write exactly 4-5 substantial paragraphs. Do NOT include any chapter number or title heading — start directly with the story.',
+      messages: [{ role: 'user', content: 'Write Chapter ' + chapterNum + ' of "' + novelTitle + '" by ' + novelAuthor + '. Genre: ' + novelGenre + '. Synopsis: ' + novelDesc }]
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    const text = (data.content || []).map(b => b.text || '').join('\n\n');
+    callback(text || fallbackContent(novelTitle, chapterNum));
+  })
+  .catch(() => callback(fallbackContent(novelTitle, chapterNum)));
+}
+
+function fallbackContent(title, ch) {
+  return `The world of cultivation is vast and unforgiving. In Chapter ${ch} of ${title}, our hero faces trials that would break ordinary men — yet within every challenge lies the seed of greater power. The path to immortality is paved not with comfort, but with perseverance forged in the fires of adversity.\n\nAcross the spiritual realm, ancient techniques clash with modern ambition. Those who cultivate in isolation may grow strong, but those who forge bonds of steel with comrades and mentors discover strengths they never imagined. The young cultivator pressed forward, meridians burning, will unbroken.\n\nHeavens tremble when a true genius rises. The elders who dismissed him as talentless now watched with narrowed eyes as his spiritual energy manifested in ways their textbooks had never recorded. Something ancient was awakening within him — something that had slept for ten thousand years, waiting for exactly this vessel, this moment, this resolve.\n\nThe path ahead was long. The enemies were many. But for the first time since beginning this journey, he smiled — not with bravado, but with the quiet certainty of someone who has finally glimpsed what they are capable of becoming.`;
+}
+
+// ── STATE ──
+let currentNovel = null;
+let currentChapter = 1;
+let library = JSON.parse(localStorage.getItem('xw_library') || '[]');
+let readerFontSize = 16;
+let sliderIdx = 0;
+let sliderTimer = null;
+const BANNER_IDS = [1,8,3,5,7];
+const TOTAL_CHAPTERS_PREVIEW = 20;
+
+// ── COVER RENDERING ──
+function coverToImg(novelId) {
+  const svgDataUri = makeCover(novelId);
+  return svgDataUri;
+}
+
+// ── LIBRARY ──
+function saveLibrary() {
+  localStorage.setItem('xw_library', JSON.stringify(library));
+  const count = library.length;
+  const badge = document.getElementById('lib-count');
+  if(count > 0){ badge.textContent = count; badge.style.display='flex'; }
+  else badge.style.display='none';
+  const titleEl = document.getElementById('lib-page-title');
+  if(titleEl) titleEl.textContent = 'マイライブラリ (' + count + ')';
+}
+
+function toggleLibrary() {
+  if(!currentNovel) return;
+  const id = currentNovel.id;
+  const idx = library.indexOf(id);
+  if(idx > -1) library.splice(idx,1);
+  else library.push(id);
+  saveLibrary();
+  updateHeartBtn();
+}
+
+function updateHeartBtn() {
+  const btn = document.getElementById('detail-heart-btn');
+  if(!btn || !currentNovel) return;
+  const inLib = library.includes(currentNovel.id);
+  btn.textContent = inLib ? '❤️' : '🤍';
+  btn.className = 'btn-heart' + (inLib ? ' active' : '');
+}
+
+// ── PAGE NAVIGATION ──
+function goPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + pageId);
+  if(target) { target.classList.add('active'); target.scrollTop = 0; }
+  // update bottom nav
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const navBtn = document.getElementById('nav-' + pageId);
+  if(navBtn) navBtn.classList.add('active');
+  // special page setup
+  if(pageId === 'library') renderLibraryPage();
+  if(pageId === 'search') {
+    setTimeout(() => document.getElementById('search-input')?.focus(), 100);
+    document.getElementById('search-results').innerHTML = '';
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-chips').style.display = 'block';
+  }
+  window.scrollTo(0,0);
+}
+
+// ── OPEN NOVEL DETAIL ──
+function openNovel(novelId) {
+  currentNovel = NOVELS.find(n => n.id === novelId);
+  if(!currentNovel) return;
+  const n = currentNovel;
+  const coverSrc = coverToImg(n.id);
+
+  document.getElementById('detail-hero-bg').src = coverSrc;
+  document.getElementById('detail-cover-img').src = coverSrc;
+  document.getElementById('detail-cover-img').alt = n.title;
+  document.getElementById('detail-title').textContent = n.titleID;
+  document.getElementById('detail-orig').textContent = n.title;
+  document.getElementById('detail-chapters').textContent = '📖 ' + n.chapters.toLocaleString();
+  document.getElementById('detail-views').textContent = '👁️ ' + n.views;
+  document.getElementById('detail-rating').textContent = '⭐ ' + (Math.floor(n.rating/10)/1).toFixed(1) + '/10';
+  document.getElementById('detail-desc').textContent = n.desc;
+
+  // badges
+  const badgesEl = document.getElementById('detail-badges');
+  badgesEl.innerHTML = `
+    <span class="${n.status==='完結'?'badge-status-done':'badge-status-ongoing'}">${n.status}</span>
+    <span class="badge-rating">👍 ${n.rating}%</span>
+  `;
+
+  // tags
+  document.getElementById('detail-tags').innerHTML = n.tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+  // chapter list
+  const clEl = document.getElementById('chapter-list');
+  let chHtml = '';
+  const maxCh = Math.min(TOTAL_CHAPTERS_PREVIEW, n.chapters);
+  for(let i=1; i<=maxCh; i++) {
+    chHtml += `<div class="chapter-item" onclick="readChapter(${i})">
+      <div class="ch-left"><span class="ch-num">第${i}話</span><span class="ch-title">チャプター ${i}</span></div>
+      <span class="ch-arrow">›</span>
+    </div>`;
+  }
+  if(n.chapters > TOTAL_CHAPTERS_PREVIEW) {
+    chHtml += `<div style="text-align:center;padding:14px;color:#555;font-size:13px">+ ${(n.chapters-TOTAL_CHAPTERS_PREVIEW).toLocaleString()} チャプターがあります</div>`;
+  }
+  clEl.innerHTML = chHtml;
+
+  updateHeartBtn();
+  switchTab('about');
   goPage('detail');
 }
 
-/* READER */
-function readChapter(ch){
-  currentChapter = ch;
+// ── TAB SWITCHING ──
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
 
-  document.getElementById('reader-novel-title').innerText = currentNovel.title;
-  document.getElementById('reader-ch-title').innerText = "Chapter " + ch;
-
-  document.getElementById('reader-content').innerHTML = `
-    <p class="reader-para">これはダミーテキストです。第${ch}章の内容。</p>
-    <p class="reader-para">修仙の世界へようこそ。</p>
-  `;
-
+// ── START READING ──
+function startReading() { readChapter(1); }
+function readChapter(chNum) {
+  currentChapter = chNum;
+  loadChapter();
   goPage('reader');
 }
 
-function nextChapter(){
-  if(currentChapter < currentNovel.chapters){
-    readChapter(currentChapter+1);
-  }
+// ── CHAPTER READER ──
+function loadChapter() {
+  if(!currentNovel) return;
+  const n = currentNovel;
+  document.getElementById('reader-novel-title').textContent = n.titleID;
+  document.getElementById('reader-ch-label').textContent = '第' + currentChapter + '話';
+  document.getElementById('reader-ch-title').textContent = '第' + currentChapter + '話';
+  document.getElementById('nav-prev').disabled = currentChapter <= 1;
+  document.getElementById('nav-next').disabled = currentChapter >= Math.min(TOTAL_CHAPTERS_PREVIEW, n.chapters);
+
+  const content = document.getElementById('reader-content');
+  content.innerHTML = `<div class="loading-spinner"><div class="spinner">⟳</div><div class="spinner-text">チャプターを読み込み中...</div></div>`;
+
+  getChapterContent(n.id, currentChapter, n.title, n.author, n.genre, n.desc, function(text) {
+    const paras = text.split('\n\n').filter(function(p){ return p.trim(); });
+    content.innerHTML = paras.map(function(p){
+      return '<p class="reader-para" style="font-size:' + readerFontSize + 'px">' + p.trim() + '</p>';
+    }).join('');
+    document.getElementById('reader-body').scrollTop = 0;
+  });
 }
 
-function prevChapter(){
-  if(currentChapter > 1){
-    readChapter(currentChapter-1);
-  }
+function prevChapter() {
+  if(currentChapter > 1) { currentChapter--; loadChapter(); document.getElementById('reader-body').scrollTop=0; }
+}
+function nextChapter() {
+  const max = Math.min(TOTAL_CHAPTERS_PREVIEW, currentNovel?.chapters || 1);
+  if(currentChapter < max) { currentChapter++; loadChapter(); document.getElementById('reader-body').scrollTop=0; }
+}
+function changeFontSize(delta) {
+  readerFontSize = Math.max(13, Math.min(22, readerFontSize + delta));
+  document.querySelectorAll('.reader-para').forEach(p => p.style.fontSize = readerFontSize + 'px');
 }
 
-/* SEARCH */
-function searchNovel(){
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const results = novels.filter(n=>n.title.toLowerCase().includes(q));
+// ── SEARCH ──
+let searchTimer = null;
+function doSearch(q) {
+  clearTimeout(searchTimer);
+  const resultsEl = document.getElementById('search-results');
+  const chipsEl = document.getElementById('search-chips');
+  const aiTip = document.getElementById('search-ai-tip');
+  if(!q.trim()) {
+    resultsEl.innerHTML = ''; chipsEl.style.display='block'; aiTip.style.display='none'; return;
+  }
+  chipsEl.style.display = 'none';
+  const ql = q.toLowerCase();
+  const found = NOVELS.filter(n =>
+    n.titleID.toLowerCase().includes(ql) || n.title.toLowerCase().includes(ql) ||
+    n.genre.toLowerCase().includes(ql) || n.tags.some(t => t.toLowerCase().includes(ql))
+  );
+  if(found.length === 0) {
+    resultsEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#555">「${q}」の検索結果はありません</div>`;
+  } else {
+    resultsEl.innerHTML = found.map(n => `
+      <div class="search-result" onclick="openNovel(${n.id})">
+        <div class="search-result-cover"><img src="${coverToImg(n.id)}" alt="${n.title}"></div>
+        <div>
+          <div class="search-title">${n.titleID}</div>
+          <div class="search-meta">${n.title} · ${n.genre} · ⭐${n.rating}%</div>
+          <div class="search-desc">${n.desc}</div>
+        </div>
+      </div>`).join('');
+  }
+  // AI tip
+  searchTimer = setTimeout(() => {
+    fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:120,
+        system:'You are an assistant for a Japanese xianxia novel platform. Reply in Japanese in 1-2 sentences with a helpful recommendation based on the search.',
+        messages:[{role:'user', content:'検索クエリ: "' + q + '"'}]
+      })
+    }).then(r=>r.json()).then(d => {
+      const t = (d.content||[]).map(b=>b.text||'').join('');
+      if(t) { aiTip.style.display='flex'; document.getElementById('search-ai-text').textContent=t; }
+    }).catch(()=>{});
+  }, 800);
+}
+function setSearch(val) {
+  document.getElementById('search-input').value = val;
+  doSearch(val);
+}
 
-  const container = document.getElementById('search-results');
-
-  container.innerHTML = results.map(n=>`
-    <div class="search-result" onclick="openDetail(${n.id})">
-      <div class="search-result-cover">
-        <img src="${n.cover}">
+// ── LIBRARY PAGE ──
+function renderLibraryPage() {
+  const listEl = document.getElementById('library-list');
+  const titleEl = document.getElementById('lib-page-title');
+  if(titleEl) titleEl.textContent = 'マイライブラリ (' + library.length + ')';
+  if(library.length === 0) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div><div>ライブラリが空です</div><div style="font-size:12px;margin-top:6px;color:#444">お気に入りの小説を追加しよう</div></div>`;
+    return;
+  }
+  listEl.innerHTML = library.map(id => {
+    const n = NOVELS.find(x=>x.id===id);
+    if(!n) return '';
+    return `<div class="lib-item">
+      <div class="lib-cover" onclick="openNovel(${n.id})"><img src="${coverToImg(n.id)}" alt="${n.title}"></div>
+      <div class="lib-info" onclick="openNovel(${n.id})">
+        <div class="lib-title">${n.titleID}</div>
+        <div class="lib-author">${n.author}</div>
+        <span class="${n.status==='完結'?'badge-status-done':'badge-status-ongoing'}">${n.status}</span>
       </div>
+      <button class="lib-remove" onclick="removeFromLib(${n.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+function removeFromLib(id) {
+  library = library.filter(x=>x!==id);
+  saveLibrary();
+  renderLibraryPage();
+}
+
+// ── HERO SLIDER ──
+function buildSlider() {
+  const container = document.getElementById('slider-container');
+  const dotsEl = document.getElementById('slider-dots');
+  container.innerHTML = '';
+  dotsEl.innerHTML = '';
+  BANNER_IDS.forEach((nid, i) => {
+    const n = NOVELS.find(x=>x.id===nid);
+    if(!n) return;
+    const coverSrc = coverToImg(n.id);
+    const div = document.createElement('div');
+    div.className = 'slide' + (i===0?' active':'');
+    div.id = 'slide-' + i;
+    div.innerHTML = `
+      <img src="${coverSrc}" alt="${n.title}" class="slide-bg" style="filter:blur(14px) brightness(.35) saturate(1.3);transform:scale(1.15)">
+      <div class="slide-gradient" style="background:${n.bannerBg};opacity:.6"></div>
+      <div class="slide-cover"><img src="${coverSrc}" alt="${n.title}"></div>
+      <div class="slide-content">
+        <div class="slide-badges">
+          <span class="badge-rating">👍 ${n.rating}%</span>
+          <span class="${n.status==='完結'?'badge-status-done':'badge-status-ongoing'}">${n.status}</span>
+        </div>
+        <div class="slide-title">${n.titleID}</div>
+        <div class="slide-desc">${n.desc}</div>
+        <button class="btn-read-now" onclick="openNovel(${n.id})">今すぐ読む</button>
+      </div>`;
+    container.appendChild(div);
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i===0?' active':'');
+    dot.onclick = () => goSlide(i);
+    dotsEl.appendChild(dot);
+  });
+  startSliderTimer();
+}
+
+function goSlide(idx) {
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.dot').forEach(d=>d.classList.remove('active'));
+  const slide = document.getElementById('slide-'+idx);
+  if(slide) { slide.classList.add('active'); slide.style.animation='none'; slide.offsetHeight; slide.style.animation=''; }
+  document.querySelectorAll('.dot')[idx]?.classList.add('active');
+  sliderIdx = idx;
+}
+function slideNext() { goSlide((sliderIdx+1) % BANNER_IDS.length); resetSliderTimer(); }
+function slidePrev() { goSlide((sliderIdx-1+BANNER_IDS.length) % BANNER_IDS.length); resetSliderTimer(); }
+function startSliderTimer() { sliderTimer = setInterval(()=>goSlide((sliderIdx+1)%BANNER_IDS.length), 5000); }
+function resetSliderTimer() { clearInterval(sliderTimer); startSliderTimer(); }
+
+// ── NOVEL CARD HTML ──
+function novelCardHTML(n, rank) {
+  const badgeMap = {HOT:'badge-hot',TOP:'badge-top',NEW:'badge-new',CLASSIC:'badge-classic',PREMIUM:'badge-premium'};
+  return `<div class="novel-card" onclick="openNovel(${n.id})">
+    <div class="novel-cover-wrap">
+      <img src="${coverToImg(n.id)}" alt="${n.title}" width="130" height="175" loading="lazy">
+      <div class="novel-status-bar"><span class="${n.status==='完結'?'status-done':'status-ongoing'}">${n.status}</span></div>
+      ${rank ? `<div class="novel-rank">${rank}</div>` : ''}
+      <div class="novel-timer">⏱</div>
+      ${n.badge ? `<div class="novel-badge ${badgeMap[n.badge]||'badge-hot'}">${n.badge}</div>` : ''}
+    </div>
+    <div class="novel-rating">👍 ${n.rating}%</div>
+    <div class="novel-title">${n.titleID}</div>
+  </div>`;
+}
+
+// ── ANNOUNCEMENTS ──
+function buildAnnouncements() {
+  const el = document.getElementById('announcements');
+  const items = [
+    {id:4, title:'リッチ・フォー・ハイヤー – 狡猾なリッチの権力への台頭！', time:'5日前'},
+    {id:1, title:'Nine Star Hegemon Body Art – チャプター4800が公開されました！', time:'2日前'},
+  ];
+  el.innerHTML = items.map(a => {
+    const n = NOVELS.find(x=>x.id===a.id);
+    return `<div class="announce-item" onclick="openNovel(${a.id})">
+      <div class="announce-thumb"><img src="${coverToImg(a.id)}" alt=""></div>
+      <div><div class="announce-title">${a.title}</div><div class="announce-time">${a.time}</div></div>
+      <span style="color:#555;font-size:16px">›</span>
+    </div>`;
+  }).join('');
+}
+
+// ── GENRE FILTER ──
+function filterGenre(genre) {
+  const filtered = genre === '完結' ? NOVELS.filter(n=>n.status==='完結') : NOVELS.filter(n=>n.genre===genre||n.tags.includes(genre));
+  goPage('search');
+  document.getElementById('search-input').value = genre;
+  document.getElementById('search-chips').style.display = 'none';
+  document.getElementById('search-results').innerHTML = filtered.map(n => `
+    <div class="search-result" onclick="openNovel(${n.id})">
+      <div class="search-result-cover"><img src="${coverToImg(n.id)}" alt="${n.title}"></div>
       <div>
-        <div class="search-title">${n.title}</div>
+        <div class="search-title">${n.titleID}</div>
+        <div class="search-meta">${n.title} · ${n.genre}</div>
         <div class="search-desc">${n.desc}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-/* INIT */
-loadHome();
-  </script>
-  
+// ── INIT ──
+function init() {
+  buildSlider();
+  buildAnnouncements();
+  // Popular (by views desc)
+  const popular = [...NOVELS].sort((a,b)=>parseFloat(b.views)-parseFloat(a.views)).slice(0,8);
+  document.getElementById('popular-scroll').innerHTML = popular.map((n,i)=>novelCardHTML(n,i+1)).join('');
+  // New releases
+  const newRel = NOVELS.slice(3,11);
+  document.getElementById('new-scroll').innerHTML = newRel.map(n=>novelCardHTML(n,null)).join('');
+  // Completed
+  const completed = NOVELS.filter(n=>n.status==='完結');
+  document.getElementById('completed-scroll').innerHTML = completed.map(n=>novelCardHTML(n,null)).join('');
+  // Library badge
+  saveLibrary();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
