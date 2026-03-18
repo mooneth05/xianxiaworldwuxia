@@ -318,3 +318,148 @@ html,body{background:#111;color:#f0f0f0;font-family:'Noto Sans JP',sans-serif;mi
 <div class="page" id="page-search">
   <div class="search-header">
     <button class="reader-ba
+<button class="reader-back" onclick="goPage('home')">‹</button>
+<div class="search-input-wrap">
+  <input class="search-input" id="search-input" placeholder="小説を検索..." oninput="searchNovel()">
+</div>
+</div>
+
+<div style="padding:16px" id="search-results"></div>
+</div>
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="goPage('home')">
+    <div class="nav-icon">🏠</div>
+    <div class="nav-label">ホーム</div>
+  </button>
+  <button class="nav-btn" onclick="goPage('search')">
+    <div class="nav-icon">🔍</div>
+    <div class="nav-label">検索</div>
+  </button>
+  <button class="nav-btn" onclick="goPage('library')">
+    <div class="nav-icon">📚</div>
+    <div class="nav-label">ライブラリ</div>
+  </button>
+</nav>
+  <script>
+let currentPage = 'home';
+
+function goPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  currentPage = page;
+}
+
+/* SAMPLE DATA */
+const novels = [
+{
+  id:1,
+  title:"最強の修仙者",
+  cover:"https://picsum.photos/200/300?1",
+  desc:"最弱から最強へ成り上がる修仙ストーリー。",
+  rating:"4.8",
+  chapters:12
+},
+{
+  id:2,
+  title:"無限システム",
+  cover:"https://picsum.photos/200/300?2",
+  desc:"システムを手に入れた男の成長物語。",
+  rating:"4.6",
+  chapters:10
+}
+];
+
+let currentNovel = null;
+let currentChapter = 0;
+
+/* LOAD HOME */
+function loadHome(){
+  const container = document.getElementById('popular-scroll');
+  container.innerHTML = novels.map(n=>`
+    <div class="novel-card" onclick="openDetail(${n.id})">
+      <div class="novel-cover-wrap">
+        <img src="${n.cover}">
+      </div>
+      <div class="novel-title">${n.title}</div>
+      <div class="novel-rating">⭐ ${n.rating}</div>
+    </div>
+  `).join('');
+}
+
+/* DETAIL */
+function openDetail(id){
+  currentNovel = novels.find(n=>n.id===id);
+
+  document.getElementById('detail-title').innerText = currentNovel.title;
+  document.getElementById('detail-cover-img').src = currentNovel.cover;
+  document.getElementById('detail-hero-bg').src = currentNovel.cover;
+  document.getElementById('detail-desc').innerText = currentNovel.desc;
+  document.getElementById('detail-rating').innerText = currentNovel.rating;
+  document.getElementById('detail-chapters').innerText = currentNovel.chapters;
+
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = '';
+
+  for(let i=1;i<=currentNovel.chapters;i++){
+    list.innerHTML += `
+      <div class="chapter-item" onclick="readChapter(${i})">
+        <div>Chapter ${i}</div>
+        <div>›</div>
+      </div>
+    `;
+  }
+
+  goPage('detail');
+}
+
+/* READER */
+function readChapter(ch){
+  currentChapter = ch;
+
+  document.getElementById('reader-novel-title').innerText = currentNovel.title;
+  document.getElementById('reader-ch-title').innerText = "Chapter " + ch;
+
+  document.getElementById('reader-content').innerHTML = `
+    <p class="reader-para">これはダミーテキストです。第${ch}章の内容。</p>
+    <p class="reader-para">修仙の世界へようこそ。</p>
+  `;
+
+  goPage('reader');
+}
+
+function nextChapter(){
+  if(currentChapter < currentNovel.chapters){
+    readChapter(currentChapter+1);
+  }
+}
+
+function prevChapter(){
+  if(currentChapter > 1){
+    readChapter(currentChapter-1);
+  }
+}
+
+/* SEARCH */
+function searchNovel(){
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const results = novels.filter(n=>n.title.toLowerCase().includes(q));
+
+  const container = document.getElementById('search-results');
+
+  container.innerHTML = results.map(n=>`
+    <div class="search-result" onclick="openDetail(${n.id})">
+      <div class="search-result-cover">
+        <img src="${n.cover}">
+      </div>
+      <div>
+        <div class="search-title">${n.title}</div>
+        <div class="search-desc">${n.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* INIT */
+loadHome();
+  </script>
+  
