@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>仙侠ワールド</title>
+<meta name="description" content="仙侠小説リーダー - 日本語対応の小説プラットフォーム">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:#111;color:#f0f0f0;font-family:'Noto Sans JP',sans-serif;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+.page{display:none;min-height:100vh;padding-bottom:70px;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes slideLeft{from{transform:translateX(60px);opacity:0}to{transform:translateX(0);opacity:1}}
+.fade-in{animation:fadeIn .3s ease forwards;}
+/* HEADER */
+.header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(17,17,17,.97);backdrop-filter:blur(12px);border-bottom:1px solid #1e1e1e;}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;}
+.logo{display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;}
+.logo-char{font-size:28px;line-height:1;color:#e8a020;}
+.logo-text{font-size:10px;color:#666;}
+.header-icons{display:flex;gap:16px;align-items:center;}
+.icon-btn{background:none;border:none;color:#ccc;cursor:pointer;font-size:20px;position:relative;padding:4px;}
+.badge{position:absolute;top:-4px;right:-4px;background:#e8a020;color:#000;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(17,17,17,.97);backdrop-filter:blur(12px);border-top:1px solid #1e1e1e;display:flex;padding:6px 0;}
+.nav-btn{flex:1;background:none;border:none;cursor:pointer;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.nav-icon{font-size:20px;}
+.nav-label{font-size:10px;color:#666;font-family:'Noto Sans JP',sans-serif;}
+.nav-btn.active .nav-label{color:#e8a020;font-weight:600;}
+/* MAIN CONTENT */
+.main-content{padding-top:60px;}
+/* HERO SLIDER */
+.slider-wrap{padding:12px 16px;position:relative;}
+.slide{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:16/9;min-height:180px;display:none;}
+.slide.active{display:block;animation:fadeIn .4s ease;}
+.slide-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.slide-gradient{position:absolute;inset:0;}
+.slide-cover{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:90px;height:130px;border-radius:6px;overflow:hidden;box-shadow:-6px 0 20px rgba(0,0,0,.8);}
+.slide-cover img{width:100%;height:100%;object-fit:cover;}
+.slide-content{position:absolute;bottom:0;left:0;right:0;padding:14px 14px 12px;max-width:65%;}
+.slide-badges{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
+.badge-rating{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);padding:2px 8px;border-radius:20px;font-size:11px;color:#fff;}
+.badge-status-ongoing{background:rgba(30,150,80,.3);border:1px solid rgba(30,150,80,.5);padding:2px 8px;border-radius:20px;font-size:11px;color:#4ade80;}
+.badge-status-done{background:rgba(96,165,250,.2);border:1px solid rgba(96,165,250,.4);padding:2px 8px;border-radius:20px;font-size:11px;color:#60a5fa;}
+.slide-title{font-size:18px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,.8);}
+.slide-desc{font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px;}
+.btn-read-now{background:#e8a020;border:none;color:#000;padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+/* SLIDER CONTROLS */
+.slider-prev,.slider-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:5;}
+.slider-prev{left:20px;}.slider-next{right:20px;}
+.slider-dots{display:flex;justify-content:center;gap:6px;margin-top:8px;}
+.dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.3);border:none;cursor:pointer;padding:0;transition:all .3s;}
+.dot.active{width:18px;background:#e8a020;}
+/* SECTION */
+.section{margin-bottom:24px;}
+.section-header{display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:10px;}
+.section-title{font-size:18px;font-weight:700;color:#f0f0f0;}
+.see-all{background:none;border:none;color:#999;font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+/* HORIZONTAL SCROLL */
+.h-scroll{display:flex;gap:12px;overflow-x:auto;padding:4px 16px 8px;scrollbar-width:none;}
+.h-scroll::-webkit-scrollbar{display:none;}
+/* NOVEL CARD */
+.novel-card{flex:0 0 auto;width:130px;cursor:pointer;}
+.novel-cover-wrap{position:relative;border-radius:8px;overflow:hidden;margin-bottom:7px;box-shadow:0 4px 12px rgba(0,0,0,.6);}
+.novel-cover-wrap img{width:130px;height:175px;object-fit:cover;display:block;}
+.novel-status-bar{position:absolute;top:0;left:0;right:0;background:rgba(0,0,0,.65);padding:3px 6px;}
+.novel-status-bar span{font-size:10px;font-weight:500;}
+.status-ongoing{color:#4ade80;}.status-done{color:#60a5fa;}
+.novel-rank{position:absolute;bottom:8px;left:8px;font-size:26px;font-weight:900;color:#fff;text-shadow:0 0 8px rgba(0,0,0,.9),1px 1px 0 #000;line-height:1;}
+.novel-timer{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);border-radius:5px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.novel-badge{position:absolute;top:22px;left:0;padding:2px 6px;font-size:9px;font-weight:700;color:#fff;border-radius:0 3px 3px 0;}
+.badge-hot{background:#dc2626;}.badge-top{background:#7c3aed;}.badge-new{background:#059669;}.badge-classic{background:#7c3aed;}.badge-premium{background:#d97706;}
+.novel-rating{font-size:11px;color:#aaa;margin-bottom:2px;}
+.novel-title{font-size:12px;font-weight:600;color:#f0f0f0;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+/* ANNOUNCEMENT */
+.announce-item{display:flex;align-items:center;gap:12px;background:#1a1a1a;border-radius:10px;padding:12px 14px;margin:0 16px 8px;cursor:pointer;}
+.announce-thumb{width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;}
+.announce-thumb img{width:100%;height:100%;object-fit:cover;}
+.announce-title{font-size:13px;font-weight:500;color:#e0e0e0;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.announce-time{font-size:11px;color:#666;margin-top:3px;}
+/* GENRE GRID */
+.genre-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px;}
+.genre-card{background:#1a1a1a;border-radius:10px;padding:14px 10px;cursor:pointer;text-align:center;}
+.genre-icon{font-size:24px;margin-bottom:6px;}
+.genre-name{font-size:13px;font-weight:600;color:#e0e0e0;margin-bottom:2px;}
+.genre-count{font-size:11px;color:#666;}
+/* NOVEL DETAIL */
+.detail-hero{position:relative;width:100%;height:240px;overflow:hidden;}
+.detail-hero-bg{width:100%;height:100%;object-fit:cover;filter:blur(10px) brightness(.4);transform:scale(1.1);}
+.detail-back{position:absolute;top:16px;left:16px;background:rgba(0,0,0,.6);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;}
+.detail-body{padding:0 16px;margin-top:-60px;position:relative;z-index:1;}
+.detail-cover-row{display:flex;gap:14px;margin-bottom:16px;}
+.detail-cover{width:100px;height:140px;border-radius:8px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.8);flex-shrink:0;}
+.detail-cover img{width:100%;height:100%;object-fit:cover;}
+.detail-info{flex:1;padding-top:55px;}
+.detail-title{font-size:17px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:3px;text-shadow:0 1px 4px rgba(0,0,0,.8);}
+.detail-orig{font-size:13px;color:#aaa;margin-bottom:8px;}
+.detail-badges{display:flex;gap:6px;flex-wrap:wrap;}
+.detail-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#2a2a2a;border-radius:10px;overflow:hidden;margin-bottom:16px;}
+.stat-item{background:#1a1a1a;padding:12px 8px;text-align:center;}
+.stat-val{font-size:14px;font-weight:700;color:#f0f0f0;}
+.stat-lbl{font-size:10px;color:#666;margin-top:2px;}
+.detail-cta{display:flex;gap:10px;margin-bottom:20px;}
+.btn-read{flex:1;background:#e8a020;border:none;color:#000;padding:13px;border-radius:25px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.btn-heart{width:50px;background:#222;border:1px solid #333;color:#aaa;border-radius:25px;font-size:18px;cursor:pointer;}
+.btn-heart.active{background:rgba(232,160,32,.15);border-color:#e8a020;color:#e8a020;}
+.detail-tabs{display:flex;border-bottom:1px solid #2a2a2a;margin-bottom:16px;}
+.tab-btn{flex:1;background:none;border:none;border-bottom:2px solid transparent;color:#666;padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s;}
+.tab-btn.active{border-bottom-color:#e8a020;color:#e8a020;}
+.tab-content{display:none;animation:fadeIn .2s ease;}
+.tab-content.active{display:block;}
+.synopsis{font-size:14px;color:#ccc;line-height:1.8;margin-bottom:14px;}
+.tag-list{display:flex;gap:8px;flex-wrap:wrap;}
+.tag{background:#222;border:1px solid #333;color:#aaa;padding:4px 12px;border-radius:20px;font-size:12px;}
+.chapter-item{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:#1a1a1a;border-radius:8px;margin-bottom:6px;cursor:pointer;}
+.ch-left{display:flex;align-items:center;gap:10px;}
+.ch-num{font-size:12px;color:#888;min-width:40px;}
+.ch-title{font-size:14px;color:#e0e0e0;}
+.ch-arrow{color:#555;font-size:16px;}
+/* CHAPTER READER */
+.reader-header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,.97);border-bottom:1px solid #2a2a2a;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(8px);}
+.reader-back{background:none;border:none;color:#fff;cursor:pointer;font-size:22px;padding:0;}
+.reader-title-wrap{text-align:center;}
+.reader-novel{font-size:13px;font-weight:600;color:#e0e0e0;}
+.reader-ch{font-size:11px;color:#666;}
+.font-controls{display:flex;gap:6px;}
+.font-btn{background:#222;border:none;color:#aaa;width:30px;height:30px;border-radius:6px;cursor:pointer;}
+.reader-body{max-width:680px;margin:0 auto;padding:80px 20px 80px;}
+.reader-ch-title{font-size:18px;font-weight:700;color:#e8a020;text-align:center;margin-bottom:28px;}
+.reader-para{line-height:1.95;color:#ccc;margin-bottom:1.6em;font-family:'Noto Serif JP',serif;text-indent:2em;}
+.reader-nav{display:flex;gap:12px;margin-top:32px;}
+.nav-prev,.nav-next{flex:1;padding:12px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;border:1px solid #333;}
+.nav-prev{background:#222;color:#aaa;}
+.nav-next{background:#e8a020;border-color:#e8a020;color:#000;font-weight:600;}
+.nav-prev:disabled,.nav-next:disabled{opacity:.3;cursor:default;}
+/* SEARCH */
+.search-header{position:fixed;top:0;left:0;right:0;z-index:100;background:#1a1a1a;border-bottom:1px solid #2a2a2a;padding:12px 16px;display:flex;gap:10px;align-items:center;}
+.search-input-wrap{flex:1;display:flex;align-items:center;background:#222;border-radius:20px;padding:8px 14px;gap:8px;}
+.search-input{flex:1;background:none;border:none;color:#e0e0e0;font-size:14px;outline:none;font-family:'Noto Sans JP',sans-serif;}
+.search-result{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1e1e1e;cursor:pointer;}
+.search-result-cover{width:50px;height:70px;border-radius:6px;overflow:hidden;flex-shrink:0;}
+.search-result-cover img{width:100%;height:100%;object-fit:cover;}
+.search-title{font-size:14px;font-weight:600;color:#e0e0e0;margin-bottom:2px;}
+.search-meta{font-size:12px;color:#777;margin-bottom:4px;}
+.search-desc{font-size:12px;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.chip-btn{display:inline-block;background:#1a1a1a;border:1px solid #2a2a2a;color:#aaa;padding:7px 14px;border-radius:20px;font-size:13px;margin:0 8px 8px 0;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+/* LIBRARY */
+.lib-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1e1e1e;}
+.lib-cover{width:60px;height:84px;border-radius:6px;overflow:hidden;flex-shrink:0;cursor:pointer;}
+.lib-cover img{width:100%;height:100%;object-fit:cover;}
+.lib-info{flex:1;cursor:pointer;}
+.lib-title{font-size:14px;font-weight:600;color:#e0e0e0;margin-bottom:2px;}
+.lib-author{font-size:12px;color:#777;margin-bottom:6px;}
+.lib-remove{background:none;border:none;color:#555;cursor:pointer;font-size:18px;align-self:center;}
+/* LOADING */
+.loading-spinner{text-align:center;padding:48px;color:#666;}
+.spinner{font-size:28px;animation:spin 1s linear infinite;display:inline-block;margin-bottom:10px;}
+.spinner-text{font-size:13px;animation:pulse 1.5s ease-in-out infinite;}
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;color:#555;}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+/* PAGE TITLE BAR */
+.page-title-bar{padding:14px 16px;display:flex;align-items:center;gap:12px;background:#1a1a1a;border-bottom:1px solid #2a2a2a;}
+.page-title-back{background:none;border:none;color:#fff;cursor:pointer;font-size:22px;}
+.page-title-text{font-size:17px;font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" onclick="goPage('home')">
+      <span class="logo-char">弌</span>
+      <span class="logo-text">仙侠ワールド</span>
+    </a>
+    <div class="header-icons">
+      <button class="icon-btn" onclick="goPage('search')" title="検索">🔍</button>
+      <button class="icon-btn" id="lib-btn" onclick="goPage('library')" title="ライブラリ">📚<span class="badge" id="lib-count" style="display:none">0</span></button>
+    </div>
+  </div>
+</header>
+
+<!-- HOME PAGE -->
+<div class="page active main-content" id="page-home">
+
+  <!-- HERO SLIDER -->
+  <div class="slider-wrap">
+    <div id="slider-container">
+      <!-- Slides injected by JS -->
+    </div>
+    <button class="slider-prev" onclick="slidePrev()">‹</button>
+    <button class="slider-next" onclick="slideNext()">›</button>
+    <div class="slider-dots" id="slider-dots"></div>
+  </div>
+
+  <!-- ANNOUNCEMENT -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">お知らせ</span>
+      <button class="see-all">すべて見る ›</button>
+    </div>
+    <div id="announcements"></div>
+  </section>
+
+  <!-- POPULAR -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">今週の人気作</span>
+      <button class="see-all">すべて見る ›</button>
+    </div>
+    <div class="h-scroll" id="popular-scroll"></div>
+  </section>
+
+  <!-- NEW RELEASES -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">新着作品</span>
+      <button class="see-all">すべて見る ›</button>
+    </div>
+    <div class="h-scroll" id="new-scroll"></div>
+  </section>
+
+  <!-- COMPLETED -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">完結済み</span>
+      <button class="see-all">すべて見る ›</button>
+    </div>
+    <div class="h-scroll" id="completed-scroll"></div>
+  </section>
+
+  <!-- GENRES -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">ジャンルを探す</span>
+    </div>
+    <div class="genre-grid">
+      <div class="genre-card" onclick="filterGenre('仙侠')"><div class="genre-icon">⚡</div><div class="genre-name">仙侠</div><div class="genre-count">3,241 作品</div></div>
+      <div class="genre-card" onclick="filterGenre('武侠')"><div class="genre-icon">🗡️</div><div class="genre-name">武侠</div><div class="genre-count">2,108 作品</div></div>
+      <div class="genre-card" onclick="filterGenre('ファンタジー')"><div class="genre-icon">🔮</div><div class="genre-name">ファンタジー</div><div class="genre-count">4,620 作品</div></div>
+      <div class="genre-card" onclick="filterGenre('システム')"><div class="genre-icon">🤖</div><div class="genre-name">システム</div><div class="genre-count">1,854 作品</div></div>
+      <div class="genre-card" onclick="filterGenre('ロマンス')"><div class="genre-icon">💕</div><div class="genre-name">ロマンス</div><div class="genre-count">2,990 作品</div></div>
+      <div class="genre-card" onclick="filterGenre('完結')"><div class="genre-icon">✅</div><div class="genre-name">完結済み</div><div class="genre-count">5,102 作品</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- NOVEL DETAIL PAGE -->
+<div class="page" id="page-detail">
+  <div class="detail-hero">
+    <img id="detail-hero-bg" src="" alt="" class="detail-hero-bg">
+    <button class="detail-back" onclick="goPage('home')">‹</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-cover-row">
+      <div class="detail-cover"><img id="detail-cover-img" src="" alt=""></div>
+      <div class="detail-info">
+        <div class="detail-title" id="detail-title"></div>
+        <div class="detail-orig" id="detail-orig"></div>
+        <div class="detail-badges" id="detail-badges"></div>
+      </div>
+    </div>
+    <div class="detail-stats">
+      <div class="stat-item"><div class="stat-val" id="detail-chapters"></div><div class="stat-lbl">チャプター</div></div>
+      <div class="stat-item"><div class="stat-val" id="detail-views"></div><div class="stat-lbl">閲覧数</div></div>
+      <div class="stat-item"><div class="stat-val" id="detail-rating"></div><div class="stat-lbl">評価</div></div>
+    </div>
+    <div class="detail-cta">
+      <button class="btn-read" id="detail-read-btn" onclick="startReading()">▶ 今すぐ読む</button>
+      <button class="btn-heart" id="detail-heart-btn" onclick="toggleLibrary()">🤍</button>
+    </div>
+    <div class="detail-tabs">
+      <button class="tab-btn active" onclick="switchTab('about')">あらすじ</button>
+      <button class="tab-btn" onclick="switchTab('chapters')">チャプター一覧</button>
+    </div>
+    <div class="tab-content active" id="tab-about">
+      <p class="synopsis" id="detail-desc"></p>
+      <div class="tag-list" id="detail-tags"></div>
+    </div>
+    <div class="tab-content" id="tab-chapters">
+      <div id="chapter-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER READER PAGE -->
+<div class="page" id="page-reader">
+  <div class="reader-header">
+    <button class="reader-back" id="reader-back-btn" onclick="goPage('detail')">‹</button>
+    <div class="reader-title-wrap">
+      <div class="reader-novel" id="reader-novel-title"></div>
+      <div class="reader-ch" id="reader-ch-label"></div>
+    </div>
+    <div class="font-controls">
+      <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+      <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+    </div>
+  </div>
+  <div class="reader-body" id="reader-body">
+    <div class="reader-ch-title" id="reader-ch-title"></div>
+    <div id="reader-content"></div>
+    <div class="reader-nav">
+      <button class="nav-prev" id="nav-prev" onclick="prevChapter()">‹ 前へ</button>
+      <button class="nav-next" id="nav-next" onclick="nextChapter()">次へ ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div class="page" id="page-search">
+  <div class="search-header">
+    <button class="reader-ba
